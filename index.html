@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilates Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f5;
+  --bg2: #f3efe9;
+  --card: #ffffff;
+  --border: #e8e2d9;
+  --sage: #7a9e82;
+  --sage-dark: #5e8067;
+  --sage-light: #c8dcc9;
+  --tan: #c4a882;
+  --tan-light: #f0e8dc;
+  --text: #2e2a26;
+  --text-muted: #7a7068;
+  --warning: #d97054;
+  --warning-bg: #fdf0eb;
+  --error: #c0392b;
+  --error-bg: #fdecea;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+
+/* NAV */
+#nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--sage-dark); letter-spacing: 0.5px; }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab { padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; transition: all 0.15s; }
+.nav-tab:hover { background: var(--bg2); color: var(--text); }
+.nav-tab.active { background: var(--sage-light); color: var(--sage-dark); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.btn-logout { font-size: 12px; color: var(--text-muted); border: 1px solid var(--border); background: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+.btn-logout:hover { background: var(--bg2); }
+
+/* MAIN */
+#main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+/* LOGIN */
+#login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+.login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 48px 40px; width: 380px; text-align: center; box-shadow: var(--shadow); }
+.login-card h1 { font-size: 32px; color: var(--sage-dark); margin-bottom: 6px; }
+.login-card .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 32px; }
+.login-card input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--bg); margin-bottom: 12px; outline: none; }
+.login-card input:focus { border-color: var(--sage); }
+.btn-primary { width: 100%; padding: 12px; background: var(--sage); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: var(--sage-dark); }
+.error-msg { background: var(--error-bg); color: var(--error); padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+
+/* BUTTONS */
+.btn { padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 7px; }
+.btn-sage { background: var(--sage); color: white; }
+.btn-sage:hover { background: var(--sage-dark); }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { background: var(--bg2); }
+.btn-danger { background: none; border: 1px solid #e0b0a8; color: var(--warning); }
+.btn-danger:hover { background: var(--warning-bg); }
+.btn-tan { background: var(--tan-light); color: var(--text); border: 1px solid var(--border); }
+.btn-tan:hover { background: #e8dcd0; }
+
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.card-sm { padding: 16px; }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.page-header h2 { font-size: 28px; color: var(--text); }
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.breadcrumb span { cursor: pointer; color: var(--sage-dark); }
+.breadcrumb span:hover { text-decoration: underline; }
+
+/* CLIENT GRID */
+.client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.client-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); }
+.client-card:hover { border-color: var(--sage-light); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.client-card h3 { font-size: 20px; margin-bottom: 4px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-beginner { background: #e8f4ea; color: #3d7a47; }
+.badge-intermediate { background: #fff3e0; color: #e6820a; }
+.badge-advanced { background: #fce8f0; color: #c0397a; }
+.badge-equipment { background: var(--bg2); color: var(--text-muted); }
+.client-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+/* FORMS */
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--bg); outline: none; color: var(--text); }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--sage); }
+.form-group textarea { min-height: 80px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg); }
+.toggle-label { font-size: 14px; color: var(--text); }
+.toggle { position: relative; width: 44px; height: 24px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; transition: 0.2s; cursor: pointer; }
+.toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+.toggle input:checked + .toggle-slider { background: var(--sage); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* INJURY WARNING */
+.injury-banner { background: var(--warning-bg); border: 1px solid #f0c8b8; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start; }
+.injury-banner .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.injury-banner strong { font-size: 12px; font-weight: 600; color: var(--warning); display: block; margin-bottom: 2px; }
+.injury-banner p { font-size: 13px; color: var(--text); }
+
+/* PROFILE TABS */
+.profile-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.profile-tab { padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; font-family: inherit; }
+.profile-tab.active { color: var(--sage-dark); border-bottom-color: var(--sage); }
+
+/* CLASS LIST */
+.class-list { display: flex; flex-direction: column; gap: 12px; }
+.class-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.class-card-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--bg2); }
+.class-card-header h3 { font-size: 18px; }
+.class-card-body { padding: 16px 20px; }
+.movement-list { display: flex; flex-direction: column; gap: 6px; }
+.movement-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; position: relative; }
+.movement-item.has-warning { border-color: #f0c8b8; background: var(--warning-bg); }
+.movement-item .drag-handle { cursor: grab; color: var(--text-muted); font-size: 16px; flex-shrink: 0; line-height: 1; }
+.movement-item .drag-handle:active { cursor: grabbing; }
+.movement-name { font-weight: 500; flex: 1; font-size: 13px; }
+.movement-meta { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+.warning-tag { font-size: 11px; background: var(--warning-bg); color: var(--warning); border: 1px solid #f0c8b8; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+.movement-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.icon-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; font-size: 14px; color: var(--text-muted); transition: all 0.15s; }
+.icon-btn:hover { background: var(--bg2); color: var(--text); }
+.icon-btn.delete:hover { background: var(--warning-bg); color: var(--warning); }
+.dragging { opacity: 0.4; }
+.drag-over { border-top: 2px solid var(--sage); }
+
+/* LIBRARY */
+.library-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+.library-filters input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; background: var(--card); outline: none; }
+.library-filters input:focus { border-color: var(--sage); }
+.library-filters select { padding: 9px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; background: var(--card); outline: none; color: var(--text); cursor: pointer; }
+.library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.lib-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.lib-card h4 { font-size: 15px; font-family: 'Cormorant Garamond', serif; font-weight: 500; margin-bottom: 4px; }
+.lib-card p { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; }
+.lib-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.lib-card-tags .badge { font-size: 10px; padding: 2px 8px; }
+.lib-card.selectable { cursor: pointer; transition: all 0.15s; }
+.lib-card.selectable:hover { border-color: var(--sage); background: #f6fbf6; }
+.lib-count { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+
+/* SWAP PANEL */
+.swap-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+.swap-panel-inner { background: var(--card); border-radius: 20px 20px 0 0; width: 100%; max-width: 700px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+.swap-panel-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.swap-panel-header h3 { font-size: 20px; }
+.swap-panel-body { overflow-y: auto; padding: 20px 24px; flex: 1; }
+.swap-mode-picker { display: flex; gap: 10px; margin-bottom: 20px; }
+.swap-mode-btn { flex: 1; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); text-align: center; cursor: pointer; transition: all 0.15s; }
+.swap-mode-btn:hover, .swap-mode-btn.active { border-color: var(--sage); background: #f6fbf6; }
+.swap-mode-btn .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.swap-mode-btn .label { font-size: 13px; font-weight: 500; color: var(--text); }
+.swap-mode-btn .desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.suggestion-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s; }
+.suggestion-card:hover { border-color: var(--sage); background: #f6fbf6; }
+.suggestion-card h4 { font-size: 15px; font-family: 'Cormorant Garamond', serif; font-weight: 500; margin-bottom: 3px; }
+.suggestion-card p { font-size: 12px; color: var(--text-muted); }
+
+/* ADD MOVEMENT PANEL */
+.add-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 16px; }
+.add-panel h4 { font-size: 18px; margin-bottom: 16px; }
+
+/* HISTORY */
+.history-item { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+.history-item-header { padding: 14px 18px; background: var(--bg2); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.history-item-header:hover { background: var(--bg); }
+.history-item-body { padding: 16px 18px; border-top: 1px solid var(--border); }
+.history-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 16px; }
+.history-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* SECTION DIVIDER */
+.section-divider { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 8px 12px 4px; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 22px; margin-bottom: 6px; color: var(--text); }
+.empty-state p { font-size: 13px; margin-bottom: 20px; }
+
+/* NOTIFICATION */
+#notification { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+#notification.show { opacity: 1; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  #main { padding: 16px; }
+  #nav { padding: 0 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .library-grid { grid-template-columns: 1fr; }
+  .client-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen" style="display:none">
+  <div class="login-card">
+    <h1>Pilates Studio</h1>
+    <p class="subtitle">Sign in to access your studio</p>
+    <div id="login-error" class="error-msg" style="display:none"></div>
+    <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password">
+    <button class="btn-primary" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<div id="app-shell" style="display:none">
+  <nav id="nav">
+    <div class="nav-logo">Pilates Studio</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" data-tab="clients" onclick="navTo('clients')">Clients</button>
+      <button class="nav-tab" data-tab="library" onclick="navTo('library')">Movement Library</button>
+    </div>
+    <div class="nav-right">
+      <button class="btn-logout" onclick="doLogout()">Log out</button>
+    </div>
+  </nav>
+  <div id="main"></div>
+</div>
+
+<div id="swap-panel" style="display:none"></div>
+
+<div id="notification"></div>
+
+<script>
+// ============================================================
+// PASSWORD
+// ============================================================
+const _pw = atob('cGlsYXRlczIwMjQ='); // pilates2024
+
+// ============================================================
+// MOVEMENT LIBRARY
+// ============================================================
+const MOVEMENTS = [
+  // MAT
+  {id:'m01',name:'The Hundred',desc:'Breathing warm-up that activates the powerhouse with rhythmic arm pumps while holding a curl.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury','cervical strain','pregnancy']},
+  {id:'m02',name:'The Roll Up',desc:'A slow, articulate spinal flexion from lying to seated and back, building deep abdominal control.',equipment:'mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','herniated disc','osteoporosis']},
+  {id:'m03',name:'The Roll Over',desc:'Legs travel overhead in an inverted stretch that lengthens the spine and opens the hamstrings.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','glaucoma','high blood pressure']},
+  {id:'m04',name:'Single Leg Circle',desc:'One leg traces circles in the hip socket to mobilise the joint and stabilise the pelvis.',equipment:'mat',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m05',name:'Rolling Like a Ball',desc:'A massage for the spine: rolling back and forth balanced on the sacrum with knees hugged in.',equipment:'mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['osteoporosis','scoliosis','lower back pain']},
+  {id:'m06',name:'Single Leg Stretch',desc:'Alternating knee-to-chest pulls with a lifted curl — the foundation of the abdominal series.',equipment:'mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'m07',name:'Double Leg Stretch',desc:'Arms and legs extend long then circle back in, creating full-body lengthening from a curled position.',equipment:'mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','herniated disc']},
+  {id:'m08',name:'Single Straight Leg Stretch',desc:'Scissoring straight legs with a dynamic pulse to the chest, challenging hamstring flexibility and core stability.',equipment:'mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','hamstring injury']},
+  {id:'m09',name:'Double Straight Leg Stretch',desc:'Both straight legs lower and lift while the upper back stays curled, demanding intense abdominal work.',equipment:'mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','herniated disc']},
+  {id:'m10',name:'Crisscross',desc:'Rotation of the torso to alternate knees creates oblique strengthening from a curled position.',equipment:'mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'m11',name:'Spine Stretch Forward',desc:'A seated forward fold with a scooped spine that decompresses the vertebrae and lengthens the back.',equipment:'mat',difficulty:'beginner',section:'cool-down',bodyRegion:'back',contra:['hamstring injury','sciatica']},
+  {id:'m12',name:'Open Leg Rocker',desc:'Balancing and rolling on the spine with wide straight legs outstretched, building control and flexibility.',equipment:'mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['osteoporosis','lower back pain','hip flexor injury']},
+  {id:'m13',name:'Corkscrew',desc:'Legs trace a corkscrew pattern from inverted, demanding full spinal and hip control.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','shoulder injury']},
+  {id:'m14',name:'The Saw',desc:'Seated spinal rotation with a forward reach — wrings out the torso and opens the back body.',equipment:'mat',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:['sciatica','hamstring injury']},
+  {id:'m15',name:'Swan Prep',desc:'A gentle back extension lifting the chest from prone — the foundational back strengthener.',equipment:'mat',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis','pregnancy']},
+  {id:'m16',name:'Swan Dive',desc:'A rocking arc from head to toes in back extension, building spinal strength and momentum control.',equipment:'mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis','wrist injury']},
+  {id:'m17',name:'Single Leg Kick',desc:'Prone double-pulse kicks alternate legs while the upper body lifts in back extension.',equipment:'mat',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['knee injury','lower back pain']},
+  {id:'m18',name:'Double Leg Kick',desc:'Both heels kick to the seat then arms reach back as the chest lifts — a powerful back opener.',equipment:'mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['knee injury','lower back pain','shoulder injury']},
+  {id:'m19',name:'Neck Pull',desc:'A challenging roll-up variation with hands behind the head that builds deep flexion strength.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','osteoporosis']},
+  {id:'m20',name:'Scissors',desc:'Inverted leg scissors in the air, controlled from a strong supported mid-back position.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','shoulder injury','high blood pressure']},
+  {id:'m21',name:'Bicycle',desc:'Inverted bicycle legs blend scissoring with deep hip flexion and extension overhead.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','high blood pressure']},
+  {id:'m22',name:'Shoulder Bridge',desc:'A supine bridge series that isolates the hamstrings and glutes while stabilising the pelvis.',equipment:'mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['knee injury','shoulder injury']},
+  {id:'m23',name:'Spine Twist',desc:'Seated rotations with arms outstretched emphasise thoracic mobility and oblique engagement.',equipment:'mat',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:['sciatica','disc herniation']},
+  {id:'m24',name:'Jackknife',desc:'From inverted hips, legs power upward and then float down — an advanced inversion and control exercise.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','shoulder injury','high blood pressure','glaucoma']},
+  {id:'m25',name:'Side Kick Front/Back',desc:'Lying on the side, the top leg swings to the front and back to challenge hip stability and flexibility.',equipment:'mat',difficulty:'beginner',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m26',name:'Side Kick Up/Down',desc:'The top leg lifts and lowers with control, building outer hip and adductor strength.',equipment:'mat',difficulty:'beginner',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m27',name:'Side Kick Circles',desc:'Small precise circles of the lifted leg work the entire hip girdle in a stabilised side position.',equipment:'mat',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m28',name:'Teaser',desc:'The iconic V-balance — rolling up to a balance on the sit bones with straight legs lifted.',equipment:'mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury','hamstring injury']},
+  {id:'m29',name:'Hip Circles',desc:'In a high side-plank, hips draw large circles to challenge core strength and shoulder stability.',equipment:'mat',difficulty:'advanced',section:'side body',bodyRegion:'core',contra:['shoulder injury','wrist injury']},
+  {id:'m30',name:'Swimming',desc:'Opposite arm and leg lift in prone alternating rhythmically, building back strength and coordination.',equipment:'mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','shoulder injury']},
+  {id:'m31',name:'Leg Pull Front',desc:'A plank variation where one leg lifts at a time, demanding full-body tension and balance.',equipment:'mat',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'m32',name:'Leg Pull Back',desc:'Reverse plank with alternating leg lifts — a demanding posterior chain and shoulder exercise.',equipment:'mat',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury','lower back pain']},
+  {id:'m33',name:'Seal',desc:'A playful cool-down: rolling back and forth in a compact ball with clapping feet.',equipment:'mat',difficulty:'beginner',section:'cool-down',bodyRegion:'core',contra:['osteoporosis','lower back pain']},
+  {id:'m34',name:'Push Up',desc:'Classical Pilates push-ups follow a roll-down: the spine articulates down then pressing up off the hands.',equipment:'mat',difficulty:'intermediate',section:'cool-down',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'m35',name:'Mermaid Stretch',desc:'A seated side bend reaching over to lengthen the waist and intercostals.',equipment:'mat',difficulty:'beginner',section:'cool-down',bodyRegion:'back',contra:[]},
+  {id:'m36',name:'Pelvic Curl',desc:'Articulating the spine from neutral up to a bridge and back down, segment by segment.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['lower back pain']},
+  {id:'m37',name:'Chest Lift',desc:'A controlled spinal flexion to build the foundation for all curl-up work.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury']},
+  {id:'m38',name:'Cat-Cow',desc:'Spinal flexion and extension on all fours to warm up the spine and connect breath to movement.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['wrist injury']},
+  {id:'m39',name:'Hip Flexor Lunge',desc:'A standing or kneeling lunge that opens the front of the hip, releasing tension before class.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'hips',contra:['knee injury']},
+  {id:'m40',name:'Thread the Needle',desc:'From all fours, one arm threads under to rotate the thoracic spine, releasing upper back tightness.',equipment:'mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['shoulder injury']},
+
+  // REFORMER
+  {id:'r01',name:'Footwork Parallel',desc:'Feet hip-width on the bar, pressing out and returning — the reformer foundation for leg strength.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury','hip replacement']},
+  {id:'r02',name:'Footwork V Position',desc:'Heels together in a small V, pressing out to work the inner thighs and rotators.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury','hip replacement']},
+  {id:'r03',name:'Footwork Arches',desc:'Mid-foot on the bar engages the intrinsic foot muscles and calf in the press.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['plantar fasciitis']},
+  {id:'r04',name:'Leg Circles on Reformer',desc:'From the straps, legs trace full circles to open the hip joint and lengthen the leg.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'r05',name:'Frog on Reformer',desc:'Bent knees open and extend in a frog-like movement from the straps, working inner thighs and hips.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','groin injury']},
+  {id:'r06',name:'Running on Reformer',desc:'Alternating heel raises while the carriage moves simulate running gait for calf and ankle mobility.',equipment:'reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['plantar fasciitis','ankle injury']},
+  {id:'r07',name:'Reformer Hundred',desc:'The classical Hundred performed on the reformer with added spring resistance for the arm pumps.',equipment:'reformer',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'r08',name:'Short Spine Massage',desc:'A spinal articulation using the straps: hips peel up overhead and roll back down slowly.',equipment:'reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['neck injury','osteoporosis','lower back pain']},
+  {id:'r09',name:'Knee Stretch Round',desc:'On all fours in a C-curve, press the carriage back and pull in — emphasising the powerhouse.',equipment:'reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'core',contra:['wrist injury','knee injury']},
+  {id:'r10',name:'Knee Stretch Arched',desc:'All fours with an arched back, pressing back to build back extension strength and hip flexor opening.',equipment:'reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'back',contra:['wrist injury','knee injury','lower back pain']},
+  {id:'r11',name:'Elephant on Reformer',desc:'Inverted V shape: pressing back from tented hands and feet, lengthening the posterior chain.',equipment:'reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'back',contra:['wrist injury','hamstring injury']},
+  {id:'r12',name:'Long Stretch',desc:'Plank position on the reformer, moving the carriage with the arms — demanding full-body control.',equipment:'reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'r13',name:'Down Stretch',desc:'An arched plank press that builds back extension and scapular stability.',equipment:'reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','wrist injury','shoulder injury']},
+  {id:'r14',name:'Up Stretch',desc:'Transitioning from a plank to a downward-dog shape on the reformer, demanding deep hip hinge.',equipment:'reformer',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','hamstring injury']},
+  {id:'r15',name:'Stomach Massage Round',desc:'Seated at the edge of the carriage in a C-curve, pressing out and in with the legs.',equipment:'reformer',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain']},
+  {id:'r16',name:'Stomach Massage Hands Back',desc:'Stomach massage variation with hands behind, opening the chest and demanding more spinal mobility.',equipment:'reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'r17',name:'Rowing Front',desc:'A sweeping arm gesture from C-curve to extension, tracing the classical rowing arc.',equipment:'reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['shoulder injury','lower back pain']},
+  {id:'r18',name:'Rowing Back',desc:'Elbows press back then circle forward, opening the chest and strengthening the posterior shoulder.',equipment:'reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'r19',name:'Backstroke on Reformer',desc:'Supine in the straps, arms sweep wide and down in a full-body integrative movement.',equipment:'reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'full body',contra:['shoulder injury','lower back pain']},
+  {id:'r20',name:'Teaser on Reformer',desc:'The iconic V-balance performed on the moving reformer carriage — extreme core challenge.',equipment:'reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury']},
+
+  // CADILLAC
+  {id:'c01',name:'Leg Springs Supine',desc:'Lying on the cadillac with leg springs, pressing legs away and returning to work core and legs together.',equipment:'cadillac',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip replacement']},
+  {id:'c02',name:'Arm Springs Standing',desc:'Standing facing the cadillac, spring-resisted arm movements build scapular control and posture.',equipment:'cadillac',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'c03',name:'Push Through Bar',desc:'Seated, the push-through bar presses overhead and comes forward — spinal and shoulder mobility.',equipment:'cadillac',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['shoulder injury','lower back pain']},
+  {id:'c04',name:'Roll Back on Cadillac',desc:'Holding the push-through bar, articulate back against spring resistance for deep abdominal control.',equipment:'cadillac',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','osteoporosis']},
+  {id:'c05',name:'Tower on Cadillac',desc:'Legs go overhead to a full inversion supported by the tower bar, building advanced control.',equipment:'cadillac',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','high blood pressure','glaucoma']},
+  {id:'c06',name:'Cat Stretch Cadillac',desc:'From kneeling, the bar assists a deep spinal stretch through full flexion and extension.',equipment:'cadillac',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['wrist injury','knee injury']},
+  {id:'c07',name:'Hanging on Cadillac',desc:'Hanging from the bar decompresses the spine and builds grip, shoulder, and core strength.',equipment:'cadillac',difficulty:'intermediate',section:'cool-down',bodyRegion:'back',contra:['shoulder injury','wrist injury']},
+  {id:'c08',name:'Mermaid on Cadillac',desc:'Side bending with spring support creates a deep lateral stretch through the entire side body.',equipment:'cadillac',difficulty:'intermediate',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'c09',name:'Pole Series',desc:'A standing series with the vertical pole for balance, rotation, and upper-body connection.',equipment:'cadillac',difficulty:'intermediate',section:'warm-up',bodyRegion:'full body',contra:[]},
+  {id:'c10',name:'Teaser on Cadillac',desc:'The spring-supported teaser builds toward the full balance while giving feedback on alignment.',equipment:'cadillac',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury']},
+
+  // WUNDA CHAIR
+  {id:'w01',name:'Footwork on Chair',desc:'Pressing the pedal down and up with various foot positions to build leg and core connection.',equipment:'wunda chair',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury']},
+  {id:'w02',name:'Pike on Chair',desc:'From a plank on the chair, hips pike up as the pedal is pressed down — extreme core demand.',equipment:'wunda chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['wrist injury','shoulder injury','lower back pain']},
+  {id:'w03',name:'Mountain Climb on Chair',desc:'Alternating knee drives while in a plank on the chair create dynamic core and hip flexor work.',equipment:'wunda chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'full body',contra:['wrist injury','knee injury']},
+  {id:'w04',name:'Tendon Stretch on Chair',desc:'Balancing on the pedal, heels lower and raise for ankle and posterior chain strength.',equipment:'wunda chair',difficulty:'advanced',section:'back extension',bodyRegion:'legs',contra:['ankle injury','balance issues']},
+  {id:'w05',name:'Pull Up on Chair',desc:'Seated, hands press down as the body lifts — building powerful shoulder depression and core support.',equipment:'wunda chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['shoulder injury','wrist injury']},
+  {id:'w06',name:'Swan on Chair',desc:'Draped over the chair in prone, the pedal is pressed to lift into a back extension arc.',equipment:'wunda chair',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis']},
+  {id:'w07',name:'Seated Pumping',desc:'Seated upright, the pedal is pumped rhythmically to build hip flexor coordination and core engagement.',equipment:'wunda chair',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip flexor injury']},
+  {id:'w08',name:'Side Sit-Up on Chair',desc:'Side-lying off the chair, the body curls up laterally — an advanced oblique strengthener.',equipment:'wunda chair',difficulty:'advanced',section:'side body',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+
+  // BARREL
+  {id:'b01',name:'Side Stretch on Barrel',desc:'Draped side-on over the barrel, the body lengthens in a supported lateral arc — a deep side stretch.',equipment:'barrel',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'b02',name:'Back Extension on Barrel',desc:'Lying prone over the arc, arms sweep up as the torso lifts into a supported back extension.',equipment:'barrel',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis']},
+  {id:'b03',name:'Abdominals on Barrel',desc:'Seated over the barrel with feet hooked, rolling back for a deeply supported abdominal curl.',equipment:'barrel',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','osteoporosis']},
+  {id:'b04',name:'Hip Circles on Barrel',desc:'Seated on top of the barrel, hips circle to mobilise the hip joint and challenge balance.',equipment:'barrel',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement']},
+  {id:'b05',name:'Horseback on Barrel',desc:'Seated astride the arc in a high hip-flexed position, arms reach and rotate — an advanced balance.',equipment:'barrel',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['hip replacement','lower back pain']},
+  {id:'b06',name:'Tendon Stretch on Barrel',desc:'Balanced on the barrel edge, heels lift and lower to challenge ankle strength and proprioception.',equipment:'barrel',difficulty:'advanced',section:'cool-down',bodyRegion:'legs',contra:['ankle injury']},
+  {id:'b07',name:'Side Kick on Barrel',desc:'Side-lying on the arc, the top leg swings with a bigger range than the mat equivalent allows.',equipment:'barrel',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+
+  // STABILITY BALL
+  {id:'s01',name:'Ball Roll Out',desc:'Kneeling, arms roll the ball forward as the body hinges — a deep abdominal and shoulder challenge.',equipment:'stability ball',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','wrist injury']},
+  {id:'s02',name:'Plank on Ball',desc:'Forearms on the ball in a plank position — the unstable surface amplifies core demand significantly.',equipment:'stability ball',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'s03',name:'Hamstring Curl on Ball',desc:'Supine bridge with heels on the ball, curling it toward the hips — strong posterior chain work.',equipment:'stability ball',difficulty:'intermediate',section:'back extension',bodyRegion:'legs',contra:['knee injury','lower back pain']},
+  {id:'s04',name:'Bridge on Ball',desc:'Shoulders on the ball, hips lift to a tabletop — a supported and accessible glute and hamstring exercise.',equipment:'stability ball',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'s05',name:'Ball Pass',desc:'Lying supine, the ball passes from hands to feet and back — a full-range core integration challenge.',equipment:'stability ball',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'s06',name:'Side Bend on Ball',desc:'Side-lying over the ball with feet stacked, the body arcs up for a loaded lateral stretch.',equipment:'stability ball',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'s07',name:'Back Extension on Ball',desc:'Prone over the ball, the torso lifts in extension — supported and accessible back strengthening.',equipment:'stability ball',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['lower back pain']},
+  {id:'s08',name:'Seated Balance on Ball',desc:'Sitting tall on the ball and lifting one foot at a time to challenge postural reflexes and core.',equipment:'stability ball',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['balance issues']},
+
+  // MAGIC CIRCLE
+  {id:'mc01',name:'Inner Thigh Press Standing',desc:'Standing with the circle between the thighs, pulsing inward to activate the adductors.',equipment:'magic circle',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip replacement','groin injury']},
+  {id:'mc02',name:'Inner Thigh Press Supine',desc:'Lying with the circle between the knees, pressing inward to work the inner thighs.',equipment:'magic circle',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['groin injury']},
+  {id:'mc03',name:'Arm Press Seated',desc:'Seated with the circle between the palms, pressing in and releasing to work the chest and shoulders.',equipment:'magic circle',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury','wrist injury']},
+  {id:'mc04',name:'Chest Expansion with Circle',desc:'Standing, the circle is held overhead and pulled apart gently to open the chest and strengthen upper back.',equipment:'magic circle',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'mc05',name:'Hundred with Circle',desc:'The Hundred performed with the circle between the ankles, adding an inner thigh challenge.',equipment:'magic circle',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['neck injury','groin injury']},
+  {id:'mc06',name:'Side Bend with Circle',desc:'Standing with the circle overhead, bending side to side to deepen the lateral stretch.',equipment:'magic circle',difficulty:'intermediate',section:'side body',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'mc07',name:'Leg Lift with Circle',desc:'Side-lying with the circle between the ankles, lifting both legs to work the outer hip and inner thigh.',equipment:'magic circle',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','groin injury']},
+  {id:'mc08',name:'Standing Series with Circle',desc:'A series of standing exercises with the circle — pressing in at various angles to challenge posture.',equipment:'magic circle',difficulty:'intermediate',section:'footwork',bodyRegion:'full body',contra:['balance issues']},
+
+  // RESISTANCE BANDS
+  {id:'rb01',name:'Seated Row with Band',desc:'Seated with the band looped around feet, rows build upper back strength and postural alignment.',equipment:'resistance bands',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'rb02',name:'Chest Press with Band',desc:'Band anchored behind, pressing forward to work the chest and front of the shoulder.',equipment:'resistance bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'rb03',name:'Lat Pulldown with Band',desc:'Band overhead, pulling down to engage the lats and build shoulder stability.',equipment:'resistance bands',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'rb04',name:'Standing Side Kick with Band',desc:'Band around the ankle provides resistance to the side kick, intensifying hip abductor work.',equipment:'resistance bands',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','ankle injury']},
+  {id:'rb05',name:'Bicep Curl with Band',desc:'Standing on the band, curling both arms to build bicep and arm strength.',equipment:'resistance bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['elbow injury']},
+  {id:'rb06',name:'Shoulder Series with Band',desc:'A series of shoulder movements — front raise, lateral raise, and external rotation — with the band.',equipment:'resistance bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'rb07',name:'Hamstring Stretch with Band',desc:'Supine, band around the foot to assist a long, supported hamstring stretch.',equipment:'resistance bands',difficulty:'beginner',section:'cool-down',bodyRegion:'legs',contra:['hamstring injury — use gently']},
+  {id:'rb08',name:'Footwork with Band',desc:'Seated with band around feet, leg presses against resistance to build hip and leg strength.',equipment:'resistance bands',difficulty:'intermediate',section:'footwork',bodyRegion:'legs',contra:['hip replacement']},
+
+  // SMALL PROPS
+  {id:'sp01',name:'Foam Roller Spine Release',desc:'Lying on the roller along the spine, arms open wide for a passive thoracic extension and chest opener.',equipment:'small props',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['osteoporosis']},
+  {id:'sp02',name:'Theraband Foot Exercises',desc:'Seated, the theraband provides resistance for pointing, flexing, and circling the foot.',equipment:'small props',difficulty:'beginner',section:'warm-up',bodyRegion:'legs',contra:['ankle injury — use gently']},
+  {id:'sp03',name:'Weighted Ball Arm Series',desc:'Standing, a light weighted ball is used for controlled arm circles and presses to build shoulder endurance.',equipment:'small props',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'sp04',name:'Small Ball Between Knees Hundred',desc:'The Hundred with a small ball squeezed between the knees to activate the inner thighs.',equipment:'small props',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury','groin injury']},
+  {id:'sp05',name:'Balance Board Standing',desc:'Standing on a balance board to improve proprioception, ankle stability, and postural reflexes.',equipment:'small props',difficulty:'intermediate',section:'warm-up',bodyRegion:'full body',contra:['ankle injury','balance issues']},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let VIEW = 'clients'; // 'clients' | 'library'
+let CLIENT_VIEW = 'list'; // 'list' | 'form' | 'profile'
+let PROFILE_TAB = 'classes'; // 'classes' | 'history'
+let SELECTED_CLIENT_ID = null;
+let EDITING_CLIENT = null; // null = new
+let GENERATED_CLASSES = [];
+let EDITING_CLASS_IDX = null; // index in GENERATED_CLASSES
+let SHOW_ADD_PANEL = false;
+let SWAP_STATE = null; // {classIdx, movIdx, mode: null|'ai'|'library'}
+let LIB_FILTERS = {equipment:'all',difficulty:'all',bodyRegion:'all',search:''};
+let SWAP_LIB_FILTERS = {equipment:'all',difficulty:'all',bodyRegion:'all',search:''};
+let HISTORY_OPEN = {};
+let DRAG_IDX = null;
+
+// ============================================================
+// PERSISTENCE
+// ============================================================
+let clients = [];
+let savedClasses = {}; // {clientId: [{date,classNum,length,movements:[]}]}
+
+function loadData(){
+  try { clients = JSON.parse(localStorage.getItem('sg_clients')||'[]'); } catch(e){clients=[];}
+  try { savedClasses = JSON.parse(localStorage.getItem('sg_classes')||'{}'); } catch(e){savedClasses={};}
+}
+function persist(){
+  localStorage.setItem('sg_clients', JSON.stringify(clients));
+  localStorage.setItem('sg_classes', JSON.stringify(savedClasses));
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function isAuthed(){ return sessionStorage.getItem('sg_auth')==='1'; }
+function doLogin(){
+  const v = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  if(v===_pw){
+    sessionStorage.setItem('sg_auth','1');
+    boot();
+  } else {
+    err.textContent='Incorrect password. Please try again.';
+    err.style.display='block';
+    document.getElementById('login-password').value='';
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('sg_auth');
+  document.getElementById('app-shell').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-password').value='';
+}
+function boot(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-shell').style.display='block';
+  renderApp();
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function getClient(id){ return clients.find(c=>c.id===id); }
+function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function experienceBadge(lvl){
+  const cls={beginner:'badge-beginner',intermediate:'badge-intermediate',advanced:'badge-advanced'}[lvl]||'badge-beginner';
+  return `<span class="badge ${cls}">${lvl||'beginner'}</span>`;
+}
+function diffBadge(d){
+  const cls={beginner:'badge-beginner',intermediate:'badge-intermediate',advanced:'badge-advanced'}[d]||'badge-beginner';
+  return `<span class="badge ${cls}">${d}</span>`;
+}
+function eqBadge(eq){ return `<span class="badge badge-equipment">${eq}</span>`; }
+function regionBadge(r){ return `<span class="badge" style="background:#f0f0f0;color:#555">${r}</span>`; }
+function showNotif(msg){
+  const n=document.getElementById('notification');
+  n.textContent=msg; n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2200);
+}
+function injuries(client){
+  if(!client||!client.injuries) return [];
+  return client.injuries.toLowerCase().split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean);
+}
+function movHasWarning(mov,client){
+  const injs=injuries(client);
+  if(!injs.length) return false;
+  const cStr=mov.contra.join(' ').toLowerCase();
+  return injs.some(inj=>cStr.includes(inj)||inj.split(' ').some(w=>w.length>3&&cStr.includes(w)));
+}
+function formatDate(d){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// ============================================================
+// CLASS GENERATION
+// ============================================================
+const SESSION_MOVEMENTS = {40:13,50:17,60:22};
+const SECTION_ORDER = ['warm-up','footwork','abdominal series','side body','back extension','cool-down'];
+const SECTION_DISTRIBUTION = {
+  13: {'warm-up':2,'footwork':2,'abdominal series':3,'side body':2,'back extension':2,'cool-down':2},
+  17: {'warm-up':3,'footwork':3,'abdominal series':4,'side body':3,'back extension':3,'cool-down':1},
+  22: {'warm-up':3,'footwork':3,'abdominal series':5,'side body':3,'back extension':4,'cool-down':4}
+};
+
+function diffPool(difficulty){
+  if(difficulty==='beginner') return ['beginner'];
+  if(difficulty==='intermediate') return ['beginner','intermediate'];
+  return ['beginner','intermediate','advanced'];
+}
+
+function generateClass(client, usedIds=[]){
+  const total = SESSION_MOVEMENTS[client.sessionLength]||13;
+  // find closest key
+  const key = [13,17,22].reduce((a,b)=>Math.abs(b-total)<Math.abs(a-total)?b:a);
+  const dist = SECTION_DISTRIBUTION[key];
+  const pool = diffPool(client.experience);
+  const result = [];
+
+  SECTION_ORDER.forEach(section=>{
+    const count = dist[section]||0;
+    let candidates = MOVEMENTS.filter(m=>
+      m.section===section &&
+      pool.includes(m.difficulty) &&
+      !result.some(r=>r.id===m.id) &&
+      !usedIds.includes(m.id)
+    );
+    if(!candidates.length){
+      candidates = MOVEMENTS.filter(m=>m.section===section && pool.includes(m.difficulty) && !result.some(r=>r.id===m.id));
+    }
+    if(!candidates.length) candidates = MOVEMENTS.filter(m=>m.section===section);
+    const chosen = shuffle(candidates).slice(0,count);
+    result.push(...chosen);
+  });
+  return result;
+}
+
+function generateWeek(client){
+  const num = client.classesPerWeek||2;
+  const classes = [];
+  if(client.repeatClasses){
+    const base = generateClass(client);
+    for(let i=0;i<num;i++) classes.push({movements:[...base]});
+  } else {
+    const allUsed = [];
+    for(let i=0;i<num;i++){
+      const movs = generateClass(client, allUsed);
+      movs.forEach(m=>allUsed.push(m.id));
+      classes.push({movements:movs});
+    }
+  }
+  return classes;
+}
+
+// ============================================================
+// SWAP SUGGESTIONS
+// ============================================================
+function getAISuggestions(mov, currentClass, client){
+  const pool = diffPool(client ? client.experience : 'advanced');
+  const inClass = currentClass.map(m=>m.id);
+  let candidates = MOVEMENTS.filter(m=>
+    m.id !== mov.id &&
+    !inClass.includes(m.id) &&
+    m.section === mov.section &&
+    m.bodyRegion === mov.bodyRegion &&
+    pool.includes(m.difficulty)
+  );
+  if(candidates.length < 3){
+    const more = MOVEMENTS.filter(m=>
+      m.id !== mov.id &&
+      !inClass.includes(m.id) &&
+      m.section === mov.section &&
+      pool.includes(m.difficulty) &&
+      !candidates.some(c=>c.id===m.id)
+    );
+    candidates = [...candidates, ...more];
+  }
+  return shuffle(candidates).slice(0,3);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderApp(){
+  updateNavTabs();
+  const main = document.getElementById('main');
+  if(VIEW==='library'){
+    main.innerHTML = renderLibraryView();
+    return;
+  }
+  if(CLIENT_VIEW==='list') main.innerHTML = renderClientList();
+  else if(CLIENT_VIEW==='form') main.innerHTML = renderClientForm();
+  else if(CLIENT_VIEW==='profile') main.innerHTML = renderProfile();
+}
+
+function updateNavTabs(){
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.tab===VIEW);
+  });
+}
+
+function navTo(tab){
+  VIEW=tab;
+  if(tab==='clients') CLIENT_VIEW='list';
+  renderApp();
+}
+
+// ============================================================
+// CLIENT LIST
+// ============================================================
+function renderClientList(){
+  const empty = !clients.length;
+  return `
+    <div class="page-header">
+      <h2>Clients</h2>
+      ${clients.length<10?`<button class="btn btn-sage" onclick="openNewClient()">+ Add Client</button>`:`<span style="font-size:13px;color:var(--text-muted)">10 client limit reached</span>`}
+    </div>
+    ${empty?`<div class="empty-state"><div class="icon">🌿</div><h3>No clients yet</h3><p>Add your first client to get started</p><button class="btn btn-sage" onclick="openNewClient()">+ Add Client</button></div>`:`
+    <div class="client-grid">
+      ${clients.map(c=>`
+        <div class="client-card" onclick="openProfile('${c.id}')">
+          <h3>${c.name}</h3>
+          <div class="client-meta">
+            ${experienceBadge(c.experience)}
+            <span class="badge badge-equipment">${c.sessionLength||50} min</span>
+            <span class="badge badge-equipment">${c.classesPerWeek||2}x/week</span>
+          </div>
+          ${c.injuries?`<p style="font-size:12px;color:var(--warning);margin-top:8px">⚠ Injury notes on file</p>`:''}
+        </div>
+      `).join('')}
+    </div>`}
+  `;
+}
+
+function openNewClient(){
+  EDITING_CLIENT=null;
+  CLIENT_VIEW='form';
+  renderApp();
+}
+function openEditClient(id){
+  EDITING_CLIENT=id;
+  CLIENT_VIEW='form';
+  renderApp();
+}
+function openProfile(id){
+  SELECTED_CLIENT_ID=id;
+  GENERATED_CLASSES=[];
+  EDITING_CLASS_IDX=null;
+  PROFILE_TAB='classes';
+  CLIENT_VIEW='profile';
+  renderApp();
+}
+
+// ============================================================
+// CLIENT FORM
+// ============================================================
+function renderClientForm(){
+  const c = EDITING_CLIENT ? getClient(EDITING_CLIENT) : null;
+  const title = c ? `Edit ${c.name}` : 'New Client';
+  return `
+    <div class="breadcrumb"><span onclick="navTo('clients')">Clients</span> › ${title}</div>
+    <div style="max-width:600px">
+      <div class="page-header"><h2>${title}</h2></div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name *</label>
+            <input id="f-name" type="text" value="${c?c.name:''}" placeholder="Client name">
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input id="f-age" type="number" value="${c?c.age:''}" placeholder="Age">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Experience Level</label>
+            <select id="f-exp">
+              <option value="beginner" ${(!c||c.experience==='beginner')?'selected':''}>Beginner</option>
+              <option value="intermediate" ${c&&c.experience==='intermediate'?'selected':''}>Intermediate</option>
+              <option value="advanced" ${c&&c.experience==='advanced'?'selected':''}>Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Classes Per Week</label>
+            <select id="f-cpw">
+              ${[1,2,3,4,5].map(n=>`<option value="${n}" ${c&&c.classesPerWeek==n?'selected':n==2&&!c?'selected':''}>  ${n}x per week</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Session Length</label>
+            <select id="f-len">
+              <option value="40" ${c&&c.sessionLength==40?'selected':''}>40 minutes</option>
+              <option value="50" ${(!c||c.sessionLength==50)?'selected':''}>50 minutes</option>
+              <option value="60" ${c&&c.sessionLength==60?'selected':''}>60 minutes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Goals</label>
+            <input id="f-goals" type="text" value="${c?c.goals||'':''}" placeholder="e.g. core strength, flexibility">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Injuries &amp; Health Notes</label>
+          <textarea id="f-injuries" placeholder="List any injuries, conditions, or health considerations...">${c?c.injuries||'':''}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Repeat Classes</label>
+          <div class="toggle-row">
+            <span class="toggle-label">Use the same class structure each session</span>
+            <label class="toggle">
+              <input type="checkbox" id="f-repeat" ${c&&c.repeatClasses?'checked':''}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div id="form-error" class="error-msg" style="display:none"></div>
+        <div class="form-actions">
+          <button class="btn btn-outline" onclick="${c?`openProfile('${c.id}')`:'navTo(\'clients\')'}">Cancel</button>
+          <button class="btn btn-sage" onclick="saveClient()">Save Client</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function saveClient(){
+  const name = document.getElementById('f-name').value.trim();
+  const err = document.getElementById('form-error');
+  if(!name){ err.textContent='Name is required.'; err.style.display='block'; return; }
+  err.style.display='none';
+  const data = {
+    name,
+    age: document.getElementById('f-age').value||null,
+    experience: document.getElementById('f-exp').value,
+    classesPerWeek: parseInt(document.getElementById('f-cpw').value),
+    sessionLength: parseInt(document.getElementById('f-len').value),
+    goals: document.getElementById('f-goals').value.trim(),
+    injuries: document.getElementById('f-injuries').value.trim(),
+    repeatClasses: document.getElementById('f-repeat').checked,
+  };
+  if(EDITING_CLIENT){
+    const idx = clients.findIndex(c=>c.id===EDITING_CLIENT);
+    clients[idx]={...clients[idx],...data};
+    persist();
+    SELECTED_CLIENT_ID=EDITING_CLIENT;
+    CLIENT_VIEW='profile';
+    GENERATED_CLASSES=[];
+    renderApp();
+    showNotif('Client updated');
+  } else {
+    if(clients.length>=10){ alert('10 client limit reached'); return; }
+    const c={id:newId(),...data};
+    clients.push(c);
+    persist();
+    SELECTED_CLIENT_ID=c.id;
+    CLIENT_VIEW='profile';
+    GENERATED_CLASSES=[];
+    renderApp();
+    showNotif('Client added');
+  }
+}
+
+function deleteClient(id){
+  if(!confirm('Delete this client and all their saved classes?')) return;
+  clients=clients.filter(c=>c.id!==id);
+  delete savedClasses[id];
+  persist();
+  CLIENT_VIEW='list';
+  renderApp();
+  showNotif('Client deleted');
+}
+
+// ============================================================
+// PROFILE
+// ============================================================
+function renderProfile(){
+  const c = getClient(SELECTED_CLIENT_ID);
+  if(!c) return renderClientList();
+  return `
+    <div class="breadcrumb"><span onclick="navTo('clients')">Clients</span> › ${c.name}</div>
+    <div class="page-header">
+      <h2>${c.name}</h2>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="openEditClient('${c.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Delete</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start">
+      <div>
+        <div class="card card-sm" style="margin-bottom:16px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Experience</span>${experienceBadge(c.experience)}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Session</span><span style="font-size:13px;font-weight:500">${c.sessionLength} min</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Frequency</span><span style="font-size:13px;font-weight:500">${c.classesPerWeek}x per week</span></div>
+            ${c.age?`<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Age</span><span style="font-size:13px;font-weight:500">${c.age}</span></div>`:''}
+            ${c.goals?`<div style="border-top:1px solid var(--border);padding-top:10px"><span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted)">Goals</span><p style="font-size:13px;margin-top:4px">${c.goals}</p></div>`:''}
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Repeat classes</span><span style="font-size:13px;font-weight:500">${c.repeatClasses?'Yes':'No'}</span></div>
+          </div>
+        </div>
+        ${c.injuries?`<div class="injury-banner"><div class="icon">⚠️</div><div><strong>Injury Notes</strong><p>${c.injuries}</p></div></div>`:''}
+      </div>
+      <div>
+        <div class="profile-tabs">
+          <button class="profile-tab ${PROFILE_TAB==='classes'?'active':''}" onclick="setProfileTab('classes')">This Week's Classes</button>
+          <button class="profile-tab ${PROFILE_TAB==='history'?'active':''}" onclick="setProfileTab('history')">Session History</button>
+        </div>
+        ${PROFILE_TAB==='classes'?renderClassesTab(c):renderHistoryTab(c)}
+      </div>
+    </div>
+  `;
+}
+
+function setProfileTab(tab){
+  PROFILE_TAB=tab;
+  renderApp();
+}
+
+// ============================================================
+// CLASSES TAB
+// ============================================================
+function renderClassesTab(c){
+  if(!GENERATED_CLASSES.length){
+    return `<div class="empty-state"><div class="icon">📋</div><h3>Ready to plan this week</h3><p>Generate ${c.classesPerWeek} class${c.classesPerWeek>1?'es':''} tailored to ${c.name}</p><button class="btn btn-sage" onclick="doGenerate()">Generate This Week's Classes</button></div>`;
+  }
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span style="font-size:13px;color:var(--text-muted)">${GENERATED_CLASSES.length} class${GENERATED_CLASSES.length>1?'es':''} generated · ${c.sessionLength} min each</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="doGenerate()">Regenerate</button>
+        <button class="btn btn-sage btn-sm" onclick="saveAllClasses()">Save All Classes</button>
+      </div>
+    </div>
+    <div class="class-list">
+      ${GENERATED_CLASSES.map((cls,i)=>renderClassCard(cls,i,c)).join('')}
+    </div>
+  `;
+}
+
+function renderClassCard(cls, idx, client){
+  const isEditing = EDITING_CLASS_IDX===idx;
+  return `
+    <div class="class-card" id="class-card-${idx}">
+      <div class="class-card-header">
+        <h3>Class ${idx+1} — ${client.name}</h3>
+        <div style="display:flex;gap:8px">
+          <span style="font-size:12px;color:var(--text-muted)">${cls.movements.length} movements · ${client.sessionLength} min</span>
+          ${isEditing?
+            `<button class="btn btn-sage btn-sm" onclick="doneEditing()">Done Editing</button>`:
+            `<button class="btn btn-outline btn-sm" onclick="startEditing(${idx})">Edit Class</button>`
+          }
+        </div>
+      </div>
+      <div class="class-card-body">
+        ${client.injuries?`<div style="font-size:12px;color:var(--warning);margin-bottom:10px">⚠ Injury notes: ${client.injuries}</div>`:''}
+        ${renderSectionedMovements(cls.movements, idx, client, isEditing)}
+        ${isEditing?`
+          ${SHOW_ADD_PANEL?renderAddPanel(idx,client):`<button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="toggleAddPanel()">+ Add Movement</button>`}
+        `:''}
+      </div>
+    </div>
+  `;
+}
+
+function renderSectionedMovements(movements, classIdx, client, editable){
+  let html='';
+  let lastSection='';
+  movements.forEach((mov,movIdx)=>{
+    if(mov.section!==lastSection){
+      html+=`<div class="section-divider">${mov.section}</div>`;
+      lastSection=mov.section;
+    }
+    const warn = movHasWarning(mov,client);
+    html+=`
+      <div class="movement-item ${warn?'has-warning':''} ${editable?'draggable-item':''}"
+        id="mov-${classIdx}-${movIdx}"
+        ${editable?`draggable="true"
+          ondragstart="dragStart(event,${classIdx},${movIdx})"
+          ondragover="dragOver(event,${classIdx},${movIdx})"
+          ondrop="dragDrop(event,${classIdx},${movIdx})"
+          ondragleave="dragLeave(event)"`:''}>
+        ${editable?`<span class="drag-handle">⠿</span>`:''}
+        <div style="flex:1;min-width:0">
+          <div class="movement-name">${mov.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${mov.desc.substring(0,70)}${mov.desc.length>70?'…':''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          ${warn?`<span class="warning-tag">⚠ check injury</span>`:''}
+          <span class="movement-meta">${mov.equipment}</span>
+          ${diffBadge(mov.difficulty)}
+          ${editable?`
+            <button class="icon-btn" title="Swap" onclick="openSwap(${classIdx},${movIdx})">⇄</button>
+            <button class="icon-btn delete" title="Remove" onclick="removeMovement(${classIdx},${movIdx})">✕</button>
+          `:''}
+        </div>
+      </div>
+    `;
+  });
+  return html;
+}
+
+function startEditing(idx){
+  EDITING_CLASS_IDX=idx;
+  SHOW_ADD_PANEL=false;
+  renderApp();
+}
+function doneEditing(){
+  EDITING_CLASS_IDX=null;
+  SHOW_ADD_PANEL=false;
+  renderApp();
+}
+
+function doGenerate(){
+  const c=getClient(SELECTED_CLIENT_ID);
+  GENERATED_CLASSES=generateWeek(c).map(cls=>({movements:cls.movements}));
+  EDITING_CLASS_IDX=null;
+  SHOW_ADD_PANEL=false;
+  renderApp();
+}
+
+function saveAllClasses(){
+  const c=getClient(SELECTED_CLIENT_ID);
+  if(!savedClasses[c.id]) savedClasses[c.id]=[];
+  const num = (savedClasses[c.id].length);
+  GENERATED_CLASSES.forEach((cls,i)=>{
+    savedClasses[c.id].unshift({
+      id:newId(),
+      date:Date.now(),
+      classNum:num+i+1,
+      length:c.sessionLength,
+      movements:cls.movements.map(m=>({id:m.id,name:m.name,section:m.section,equipment:m.equipment,difficulty:m.difficulty}))
+    });
+  });
+  persist();
+  showNotif('Classes saved to history');
+}
+
+function saveOneClass(idx){
+  const c=getClient(SELECTED_CLIENT_ID);
+  if(!savedClasses[c.id]) savedClasses[c.id]=[];
+  const cls=GENERATED_CLASSES[idx];
+  savedClasses[c.id].unshift({
+    id:newId(),
+    date:Date.now(),
+    classNum:(savedClasses[c.id].length)+1,
+    length:c.sessionLength,
+    movements:cls.movements.map(m=>({id:m.id,name:m.name,section:m.section,equipment:m.equipment,difficulty:m.difficulty}))
+  });
+  persist();
+  showNotif(`Class ${idx+1} saved`);
+}
+
+// ============================================================
+// MOVEMENT EDITOR
+// ============================================================
+function removeMovement(classIdx, movIdx){
+  GENERATED_CLASSES[classIdx].movements.splice(movIdx,1);
+  renderApp();
+}
+
+function toggleAddPanel(){
+  SHOW_ADD_PANEL=!SHOW_ADD_PANEL;
+  renderApp();
+}
+
+function renderAddPanel(classIdx,client){
+  const f=SWAP_LIB_FILTERS;
+  const filtered=applyFilters(MOVEMENTS,f);
+  return `
+    <div class="add-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h4>Add Movement</h4>
+        <button class="icon-btn" onclick="toggleAddPanel()">✕</button>
+      </div>
+      ${renderFilterBar(f,'swapLibFilter')}
+      <div style="max-height:300px;overflow-y:auto;margin-top:12px">
+        ${filtered.slice(0,30).map(m=>`
+          <div class="suggestion-card" onclick="addMovement(${classIdx},'${m.id}')">
+            <h4>${m.name}</h4>
+            <p>${m.equipment} · ${m.difficulty} · ${m.section}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function addMovement(classIdx, movId){
+  const mov=MOVEMENTS.find(m=>m.id===movId);
+  if(mov) GENERATED_CLASSES[classIdx].movements.push(mov);
+  SHOW_ADD_PANEL=false;
+  renderApp();
+}
+
+// ============================================================
+// DRAG AND DROP
+// ============================================================
+function dragStart(e,classIdx,movIdx){
+  DRAG_IDX=movIdx;
+  e.dataTransfer.effectAllowed='move';
+  e.target.classList.add('dragging');
+}
+function dragOver(e,classIdx,movIdx){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function dragDrop(e,classIdx,movIdx){
+  e.preventDefault();
+  if(DRAG_IDX===null||DRAG_IDX===movIdx) return;
+  const movs=GENERATED_CLASSES[classIdx].movements;
+  const [item]=movs.splice(DRAG_IDX,1);
+  movs.splice(movIdx,0,item);
+  DRAG_IDX=null;
+  renderApp();
+}
+
+// ============================================================
+// SWAP
+// ============================================================
+function openSwap(classIdx, movIdx){
+  SWAP_STATE={classIdx,movIdx,mode:null};
+  renderSwapPanel();
+}
+function closeSwap(){
+  SWAP_STATE=null;
+  document.getElementById('swap-panel').style.display='none';
+}
+
+function renderSwapPanel(){
+  const panel=document.getElementById('swap-panel');
+  if(!SWAP_STATE){panel.style.display='none';return;}
+  const {classIdx,movIdx,mode}=SWAP_STATE;
+  const cls=GENERATED_CLASSES[classIdx];
+  const mov=cls.movements[movIdx];
+  const client=getClient(SELECTED_CLIENT_ID);
+  let body='';
+  if(!mode){
+    body=`
+      <div class="swap-mode-picker">
+        <div class="swap-mode-btn" onclick="setSwapMode('ai')">
+          <span class="icon">✨</span>
+          <div class="label">AI Suggestions</div>
+          <div class="desc">3 alternatives matched by region &amp; order</div>
+        </div>
+        <div class="swap-mode-btn" onclick="setSwapMode('library')">
+          <span class="icon">📚</span>
+          <div class="label">Browse Library</div>
+          <div class="desc">Pick any movement from the full library</div>
+        </div>
+      </div>
+    `;
+  } else if(mode==='ai'){
+    const suggestions=getAISuggestions(mov,cls.movements,client);
+    body=`
+      <button class="btn btn-outline btn-sm" style="margin-bottom:16px" onclick="setSwapMode(null)">← Back</button>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Alternatives matching <strong>${mov.section}</strong> · <strong>${mov.bodyRegion}</strong></p>
+      ${suggestions.length?suggestions.map(s=>`
+        <div class="suggestion-card" onclick="confirmSwap('${s.id}')">
+          <h4>${s.name}</h4>
+          <p>${s.desc.substring(0,80)}…</p>
+          <div style="margin-top:8px;display:flex;gap:6px">${eqBadge(s.equipment)}${diffBadge(s.difficulty)}</div>
+        </div>
+      `).join(''):`<p style="color:var(--text-muted);font-size:13px">No close matches found. Try browsing the library.</p>`}
+    `;
+  } else if(mode==='library'){
+    const f=SWAP_LIB_FILTERS;
+    const filtered=applyFilters(MOVEMENTS,f).filter(m=>m.id!==mov.id);
+    body=`
+      <button class="btn btn-outline btn-sm" style="margin-bottom:14px" onclick="setSwapMode(null)">← Back</button>
+      ${renderFilterBar(f,'swapLibFilter')}
+      <div style="margin-top:12px">
+        ${filtered.slice(0,40).map(s=>`
+          <div class="suggestion-card" onclick="confirmSwap('${s.id}')">
+            <h4>${s.name}</h4>
+            <p>${s.equipment} · ${s.difficulty} · ${s.section}</p>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  panel.style.display='flex';
+  panel.innerHTML=`
+    <div class="swap-panel-inner">
+      <div class="swap-panel-header">
+        <div>
+          <h3>Swap: ${mov.name}</h3>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${mov.section} · ${mov.bodyRegion}</p>
+        </div>
+        <button class="icon-btn" onclick="closeSwap()" style="font-size:20px">✕</button>
+      </div>
+      <div class="swap-panel-body">${body}</div>
+    </div>
+  `;
+}
+
+function setSwapMode(mode){
+  SWAP_STATE.mode=mode;
+  SWAP_LIB_FILTERS={equipment:'all',difficulty:'all',bodyRegion:'all',search:''};
+  renderSwapPanel();
+}
+
+function confirmSwap(movId){
+  const newMov=MOVEMENTS.find(m=>m.id===movId);
+  if(!newMov) return;
+  const {classIdx,movIdx}=SWAP_STATE;
+  GENERATED_CLASSES[classIdx].movements[movIdx]=newMov;
+  closeSwap();
+  renderApp();
+  showNotif(`Swapped to ${newMov.name}`);
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistoryTab(c){
+  const history = (savedClasses[c.id]||[]);
+  if(!history.length){
+    return `<div class="empty-state"><div class="icon">📖</div><h3>No history yet</h3><p>Generate and save classes to build a session history</p></div>`;
+  }
+  return `
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px">${history.length} saved session${history.length>1?'s':''}</div>
+    ${history.map(h=>`
+      <div class="history-item">
+        <div class="history-item-header" onclick="toggleHistory('${h.id}')">
+          <div>
+            <div style="font-weight:500;font-size:14px">Class ${h.classNum} — ${formatDate(h.date)}</div>
+            <div class="history-meta" style="margin-top:4px">
+              <span>🕐 ${h.length} min</span>
+              <span>🏃 ${h.movements.length} movements</span>
+            </div>
+          </div>
+          <span style="color:var(--text-muted);font-size:18px">${HISTORY_OPEN[h.id]?'∧':'∨'}</span>
+        </div>
+        ${HISTORY_OPEN[h.id]?`
+          <div class="history-item-body">
+            ${h.movements.map(m=>`
+              <div class="movement-item" style="margin-bottom:6px">
+                <div style="flex:1"><div class="movement-name">${m.name}</div></div>
+                <span class="movement-meta">${m.equipment||''}</span>
+                ${m.difficulty?diffBadge(m.difficulty):''}
+              </div>
+            `).join('')}
+          </div>
+        `:''}
+      </div>
+    `).join('')}
+  `;
+}
+
+function toggleHistory(id){
+  HISTORY_OPEN[id]=!HISTORY_OPEN[id];
+  renderApp();
+}
+
+// ============================================================
+// LIBRARY VIEW
+// ============================================================
+function renderLibraryView(){
+  const f=LIB_FILTERS;
+  const filtered=applyFilters(MOVEMENTS,f);
+  return `
+    <div class="page-header"><h2>Movement Library</h2><span style="font-size:13px;color:var(--text-muted)">${MOVEMENTS.length} movements total</span></div>
+    ${renderFilterBar(f,'libFilter')}
+    <div class="lib-count">${filtered.length} movement${filtered.length!==1?'s':''} shown</div>
+    <div class="library-grid">
+      ${filtered.map(m=>`
+        <div class="lib-card">
+          <h4>${m.name}</h4>
+          <p>${m.desc}</p>
+          <div class="lib-card-tags">
+            ${eqBadge(m.equipment)}
+            ${diffBadge(m.difficulty)}
+            ${regionBadge(m.bodyRegion)}
+            ${m.contra.length?`<span class="badge" style="background:var(--warning-bg);color:var(--warning);font-size:10px;padding:2px 8px">contraindications</span>`:''}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function applyFilters(movements, f){
+  return movements.filter(m=>{
+    if(f.equipment&&f.equipment!=='all'&&m.equipment!==f.equipment) return false;
+    if(f.difficulty&&f.difficulty!=='all'&&m.difficulty!==f.difficulty) return false;
+    if(f.bodyRegion&&f.bodyRegion!=='all'&&m.bodyRegion!==f.bodyRegion) return false;
+    if(f.search&&!m.name.toLowerCase().includes(f.search.toLowerCase())&&!m.desc.toLowerCase().includes(f.search.toLowerCase())) return false;
+    return true;
+  });
+}
+
+const EQUIPMENTS=[...new Set(MOVEMENTS.map(m=>m.equipment))].sort();
+const REGIONS=[...new Set(MOVEMENTS.map(m=>m.bodyRegion))].sort();
+
+function renderFilterBar(f, fnPrefix){
+  return `
+    <div class="library-filters">
+      <input type="text" placeholder="Search movements…" value="${f.search||''}" oninput="${fnPrefix}Search(this.value)">
+      <select onchange="${fnPrefix}Eq(this.value)">
+        <option value="all" ${f.equipment==='all'?'selected':''}>All equipment</option>
+        ${EQUIPMENTS.map(e=>`<option value="${e}" ${f.equipment===e?'selected':''}>${e}</option>`).join('')}
+      </select>
+      <select onchange="${fnPrefix}Diff(this.value)">
+        <option value="all" ${f.difficulty==='all'?'selected':''}>All levels</option>
+        <option value="beginner" ${f.difficulty==='beginner'?'selected':''}>Beginner</option>
+        <option value="intermediate" ${f.difficulty==='intermediate'?'selected':''}>Intermediate</option>
+        <option value="advanced" ${f.difficulty==='advanced'?'selected':''}>Advanced</option>
+      </select>
+      <select onchange="${fnPrefix}Region(this.value)">
+        <option value="all" ${f.bodyRegion==='all'?'selected':''}>All regions</option>
+        ${REGIONS.map(r=>`<option value="${r}" ${f.bodyRegion===r?'selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>
+  `;
+}
+
+// Filter handlers — library
+function libFilterSearch(v){LIB_FILTERS.search=v;renderApp();}
+function libFilterEq(v){LIB_FILTERS.equipment=v;renderApp();}
+function libFilterDiff(v){LIB_FILTERS.difficulty=v;renderApp();}
+function libFilterRegion(v){LIB_FILTERS.bodyRegion=v;renderApp();}
+
+// Filter handlers — swap/add panel
+function swapLibFilterSearch(v){SWAP_LIB_FILTERS.search=v;renderSwapPanel&&renderSwapPanel();renderApp();}
+function swapLibFilterEq(v){SWAP_LIB_FILTERS.equipment=v;renderSwapPanel&&renderSwapPanel();renderApp();}
+function swapLibFilterDiff(v){SWAP_LIB_FILTERS.difficulty=v;renderSwapPanel&&renderSwapPanel();renderApp();}
+function swapLibFilterRegion(v){SWAP_LIB_FILTERS.bodyRegion=v;renderSwapPanel&&renderSwapPanel();renderApp();}
+
+// ============================================================
+// INIT
+// ============================================================
+loadData();
+document.getElementById('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+if(isAuthed()) boot();
+else document.getElementById('login-screen').style.display='flex';
+</script>
+</body>
+</html>
