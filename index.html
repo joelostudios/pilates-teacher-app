@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilates Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f5;
+  --bg2: #f3efe9;
+  --card: #ffffff;
+  --border: #e8e2d9;
+  --sage: #7a9e82;
+  --sage-dark: #5e8067;
+  --sage-light: #c8dcc9;
+  --sidebar: #3f5c47;
+  --sidebar-text: #f7f4ee;
+  --sidebar-muted: #c9d9c6;
+  --tan: #c4a882;
+  --tan-light: #f0e8dc;
+  --text: #2e2a26;
+  --text-muted: #7a7068;
+  --text-faint: #a89f93;
+  --warning: #d97054;
+  --warning-bg: #fdf0eb;
+  --error: #c0392b;
+  --error-bg: #fdecea;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+@keyframes riseIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+@keyframes slideInRight { from{transform:translateX(100%)} to{transform:translateX(0)} }
+
+/* LOGIN */
+#login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+.login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 48px 40px; width: 380px; text-align: center; box-shadow: var(--shadow); }
+.login-card h1 { font-size: 32px; color: var(--sage-dark); margin-bottom: 6px; }
+.login-card .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 32px; }
+.login-card input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--bg); margin-bottom: 12px; outline: none; }
+.login-card input:focus { border-color: var(--sage); }
+.btn-primary { width: 100%; padding: 12px; background: var(--sage); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: var(--sage-dark); }
+.error-msg { background: var(--error-bg); color: var(--error); padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; text-align:left; }
+
+/* SHELL / SIDEBAR */
+#app-shell { display:none; }
+#app-shell.on { display:flex; min-height:100vh; }
+#sidebar { width:230px; flex-shrink:0; background:var(--sidebar); display:flex; flex-direction:column; padding:26px 18px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.sidebar-logo { display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:28px; color:var(--sidebar-text); }
+.sidebar-logo span { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; letter-spacing:0.3px; }
+.sidebar-section-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#a8c2a3; padding:0 10px; margin-bottom:8px; }
+.sidebar-nav { display:flex; flex-direction:column; gap:2px; }
+.sidebar-link { display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; color:var(--sidebar-muted); font-size:13.5px; font-weight:500; text-decoration:none; border:none; background:none; cursor:pointer; font-family:inherit; text-align:left; width:100%; }
+.sidebar-link:hover { background:rgba(255,255,255,0.08); color:var(--sidebar-text); }
+.sidebar-link.active { background:rgba(255,255,255,0.14); color:var(--sidebar-text); font-weight:600; }
+.sidebar-spacer { flex:1; }
+.btn-logout { display:flex; align-items:center; justify-content:center; gap:6px; font-size: 12px; color: var(--sidebar-muted); border: 1px solid rgba(255,255,255,0.16); background: none; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-family:inherit; width:100%; }
+.btn-logout:hover { background: rgba(255,255,255,0.08); color:var(--sidebar-text); }
+#main-content { flex:1; min-width:0; padding:40px 48px 100px; }
+.page-wrap { max-width:1180px; margin:0 auto; }
+
+/* BUTTONS */
+.btn { padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 7px; }
+.btn-xs { padding: 4px 9px; font-size: 11px; border-radius: 6px; }
+.btn-sage { background: var(--sage); color: white; }
+.btn-sage:hover { background: var(--sage-dark); }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { background: var(--bg2); }
+.btn-danger { background: none; border: 1px solid #e0b0a8; color: var(--warning); }
+.btn-danger:hover { background: var(--warning-bg); }
+.btn:disabled { opacity:0.55; cursor:not-allowed; }
+.icon-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; font-size: 14px; color: var(--text-muted); transition: all 0.15s; }
+.icon-btn:hover { background: var(--bg2); color: var(--text); }
+.icon-btn.delete:hover { background: var(--warning-bg); color: var(--warning); }
+
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.card-sm { padding: 16px; }
+.card-flat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; color:#8a9a86; margin-bottom:9px; }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap:wrap; gap:12px; }
+.page-header h2 { font-size: 30px; color: var(--text); }
+.page-sub { color:var(--text-muted); font-size:13.5px; margin:6px 0 24px; max-width:600px; }
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.breadcrumb span { cursor: pointer; color: var(--sage-dark); }
+.breadcrumb span:hover { text-decoration: underline; }
+
+/* CLIENT GRID */
+.client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+.client-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); }
+.client-card:hover { border-color: var(--sage-light); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.avatar-circle { width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:16px; color:#fff; }
+.avatar-circle.lg { width:52px; height:52px; font-size:18px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space:nowrap; }
+.badge-beginner { background: #e8f4ea; color: #3d7a47; }
+.badge-intermediate { background: #fdf0dc; color: #b8720a; }
+.badge-advanced { background: #fbe4ee; color: #b13d78; }
+.badge-equipment { background: var(--bg2); color: var(--text-muted); font-weight:500; }
+.badge-neutral { background:#f3efe9; color:var(--text-muted); font-weight:500; }
+.client-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+/* FORMS */
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--bg); outline: none; color: var(--text); }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--sage); }
+.form-group textarea { min-height: 80px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg); }
+.toggle-label { font-size: 14px; color: var(--text); }
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink:0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; transition: 0.2s; cursor: pointer; }
+.toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+.toggle input:checked + .toggle-slider { background: var(--sage); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* MODALS + PANELS */
+.modal-overlay { position:fixed; inset:0; background:rgba(30,26,20,0.45); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal-box { background:#fff; border-radius:20px; width:100%; max-width:520px; padding:32px; max-height:88vh; overflow-y:auto; animation:riseIn 0.2s ease; }
+.modal-box.narrow { max-width:440px; }
+.modal-box.wide { max-width:640px; }
+.modal-title { font-size:22px; font-weight:600; font-family:'Cormorant Garamond',serif; margin-bottom:20px; }
+.slideover-overlay { position:fixed; inset:0; background:rgba(30,26,20,0.4); z-index:310; display:flex; justify-content:flex-end; }
+.slideover-panel { width:100%; max-width:420px; height:100%; background:#fff; overflow-y:auto; padding:28px; animation:slideInRight 0.22s ease; }
+
+/* PROFILE TABS */
+.profile-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap:wrap; }
+.profile-tab { padding: 10px 16px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; font-family: inherit; white-space:nowrap; }
+.profile-tab.active { color: var(--sage-dark); border-bottom-color: var(--sage); font-weight:600; }
+
+/* INJURY / WARNING BANNERS */
+.injury-banner { background: var(--warning-bg); border: 1px solid #f0c8b8; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; }
+.injury-banner .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.injury-banner strong { font-size: 12px; font-weight: 600; color: var(--warning); display: block; margin-bottom: 2px; }
+.injury-banner p { font-size: 13px; color: var(--text); }
+.plan-banner { display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--tan-light); border:1px solid #ddc9a8; border-radius:12px; padding:14px 18px; margin-bottom:20px; flex-wrap:wrap; }
+
+/* CONDITIONS / SYMPTOMS */
+.list-row { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:var(--bg); border-radius:10px; flex-wrap:wrap; gap:8px; margin-bottom:8px; cursor:pointer; }
+.list-row:hover { background:var(--bg2); }
+.chip { font-size:10.5px; padding:3px 10px; border-radius:20px; background:var(--bg2); color:var(--text-muted); font-weight:500; white-space:nowrap; }
+.chip-source { font-size:10px; padding:3px 9px; border-radius:20px; background:#eaf1e9; color:#3d7a47; font-weight:600; white-space:nowrap; cursor:pointer; }
+.pick-row { padding:11px 14px; border-radius:9px; cursor:pointer; font-size:13px; background:var(--bg); margin-bottom:6px; }
+.pick-row:hover { background:var(--bg2); }
+.empty-state { text-align: center; padding: 44px 20px; color: var(--text-muted); }
+.empty-state .icon { font-size: 30px; margin-bottom: 10px; }
+.empty-state h3 { margin-bottom: 6px; color:var(--text); }
+.empty-state p { font-size: 13px; margin-bottom: 16px; }
+.empty-state-sm { text-align:center; padding:26px 10px; }
+.empty-state-sm div:first-child { font-size:13px; color:var(--text-muted); margin-bottom:4px; }
+.empty-state-sm div:last-child { font-size:11.5px; color:var(--text-faint); }
+
+/* ASSESSMENT */
+.progress-track { height:6px; background:var(--tan-light); border-radius:20px; overflow:hidden; margin:10px 0 22px; }
+.progress-fill { height:100%; background:var(--sage); border-radius:20px; transition:width 0.3s ease; }
+.collapse-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:12px; }
+.collapse-header { display:flex; align-items:center; justify-content:space-between; padding:15px 20px; cursor:pointer; flex-wrap:wrap; gap:10px; }
+.collapse-body { padding:0 20px 20px; border-top:1px solid #f0ece4; }
+.field-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+.field-label { font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-faint); margin-bottom:4px; }
+
+/* 3-MONTH PLAN */
+.plan-week-row { display:flex; align-items:center; gap:16px; padding:13px 18px; border-radius:10px; cursor:pointer; background:#fff; border:1px solid var(--border); margin-bottom:8px; flex-wrap:wrap; }
+.plan-week-row.current { background:#eef4ec; border-color:var(--sage); }
+.plan-week-row.done { opacity:0.55; }
+.plan-week-row.upcoming { opacity:0.85; }
+.plan-week-num { width:34px; flex-shrink:0; font-size:12px; color:var(--text-muted); font-weight:600; }
+.plan-week-edit { padding:16px 18px; border-radius:10px; background:#fff; border:1px solid var(--sage); display:flex; flex-direction:column; gap:10px; margin-bottom:8px; }
+
+/* GOAL TAGS */
+.goal-chip { font-size:10.5px; padding:3px 10px; border-radius:20px; font-weight:600; white-space:nowrap; }
+.goal-toggle { padding:7px 14px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--text-muted); }
+.goal-toggle.active.strengthen { background:#7a9e82; color:#fff; border-color:#7a9e82; }
+.goal-toggle.active.stretch { background:#f0e8dc; color:#8a7554; border-color:#ddc9a8; }
+.goal-toggle.active.stamina { background:#fdf0eb; color:#d97054; border-color:#f0c8b8; }
+.goal-toggle.active.stability { background:#c8dcc9; color:#3f5c47; border-color:#c8dcc9; }
+
+/* SESSION BUILDER */
+.format-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:760px; }
+.format-card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:30px 26px; cursor:pointer; text-align:left; }
+.format-card:hover { border-color:var(--sage-light); box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.format-card h3 { font-size:20px; margin-bottom:8px; }
+.format-card p { font-size:13px; color:var(--text-muted); line-height:1.5; }
+.sb-header-bar { display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; justify-content:space-between; background:#fff; border:1px solid var(--border); border-radius:14px; padding:16px 20px; margin-bottom:22px; }
+.stepper { display:flex; align-items:center; gap:8px; margin-bottom:24px; max-width:420px; }
+.step-circle { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; background:var(--border); color:var(--text-muted); flex-shrink:0; }
+.step-circle.done { background:var(--sage); color:#fff; }
+.step-circle.active { background:var(--sage-dark); color:#fff; }
+.step-line { flex:1; height:2px; background:var(--border); }
+.step-line.done { background:var(--sage); }
+.level-pill { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; border:1px solid var(--border); background:#fff; cursor:pointer; }
+.level-pill.active { background:var(--sage); color:#fff; border-color:var(--sage); }
+.chip-removable { display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:20px; background:var(--bg2); font-size:12px; }
+.chip-removable button { background:none; border:none; cursor:pointer; color:var(--text-muted); padding:0; font-size:12px; }
+.stage-block { background:#fff; border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:16px; }
+.exercise-row { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:var(--bg); border-radius:8px; margin-bottom:6px; gap:8px; flex-wrap:wrap; }
+.exercise-row.has-warning { background:var(--warning-bg); border:1px solid #f0c8b8; }
+.inline-picker { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:12px; }
+.picker-tabs { display:flex; gap:4px; margin-bottom:10px; }
+.picker-tab { padding:6px 12px; font-size:12px; font-weight:600; border:none; background:none; color:var(--text-muted); border-radius:8px; cursor:pointer; }
+.picker-tab.active { background:var(--sage-light); color:var(--sage-dark); }
+.summary-block { background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px; margin-bottom:14px; }
+
+/* CLASS BUILDER */
+.theme-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+.theme-card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:20px; cursor:pointer; }
+.theme-card:hover { border-color:var(--sage-light); }
+.theme-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; }
+
+/* REFERENCE LIBRARY */
+.doc-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 18px; cursor:pointer; margin-bottom:10px; }
+.doc-card:hover { border-color:var(--sage-light); }
+.doc-section { margin-bottom:20px; }
+.doc-section.highlighted { background:#eef4ec; border-radius:10px; padding:14px 16px; margin-left:-16px; margin-right:-16px; }
+
+/* SWAP / DRAG */
+.movement-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; position: relative; }
+.movement-item.has-warning { border-color: #f0c8b8; background: var(--warning-bg); }
+.movement-item .drag-handle { cursor: grab; color: var(--text-muted); font-size: 16px; flex-shrink: 0; line-height: 1; }
+.movement-name { font-weight: 500; flex: 1; font-size: 13px; }
+.movement-meta { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+.warning-tag { font-size: 11px; background: var(--warning-bg); color: var(--warning); border: 1px solid #f0c8b8; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+.section-divider { font-size:10.5px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; color:var(--text-faint); margin:12px 0 6px; }
+.dragging { opacity: 0.4; }
+.drag-over { border-top: 2px solid var(--sage); }
+
+/* LIBRARY FILTERS (reused in pickers) */
+.library-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+.library-filters input { flex: 1; min-width: 180px; padding: 9px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; background: var(--card); outline: none; }
+.library-filters select { padding: 9px 14px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; background: var(--card); outline: none; color: var(--text); cursor: pointer; }
+
+#notification { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 13px 22px; border-radius: 11px; font-size: 13px; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 999; }
+#notification.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 900px) {
+  #sidebar { width:80px; padding:20px 10px; }
+  .sidebar-logo span, .sidebar-link span.label, .sidebar-section-label, .btn-logout span.label { display:none; }
+  .sidebar-link { justify-content:center; }
+  #main-content { padding:24px 18px 80px; }
+}
+@media (max-width: 768px) {
+  .form-row, .field-grid, .format-grid { grid-template-columns: 1fr; }
+  .client-grid, .theme-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Pilates Studio</h1>
+    <p class="subtitle">Sign in to access your studio</p>
+    <div id="login-error" class="error-msg" style="display:none"></div>
+    <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password">
+    <button class="btn-primary" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d7e8d4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13c0-6 4-10 10-10 1 8-3 14-10 14-3 0-4-2-4-4z"/><path d="M6 18C10 14 14 10 18 6"/></svg>
+      <span>Pilates Studio</span>
+    </div>
+    <div class="sidebar-section-label">Studio</div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <button class="sidebar-link" data-view="clients" onclick="navTo('clients')"><span>👥</span><span class="label">Clients</span></button>
+      <button class="sidebar-link" data-view="sessionBuilder" onclick="navTo('sessionBuilder')"><span>🗓️</span><span class="label">Session Builder</span></button>
+      <button class="sidebar-link" data-view="classBuilder" onclick="navTo('classBuilder')"><span>🧩</span><span class="label">Class Builder</span></button>
+      <button class="sidebar-link" data-view="referenceLibrary" onclick="navTo('referenceLibrary')"><span>📚</span><span class="label">Reference Library</span></button>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <button class="btn-logout" onclick="doLogout()"><span>⎋</span><span class="label"> Log out</span></button>
+  </aside>
+  <div id="main-content"><div class="page-wrap" id="main"></div></div>
+</div>
+
+<div id="modal-root"></div>
+<div id="panel-root"></div>
+<div id="notification"></div>
+<input type="file" id="ref-upload-input" accept="application/pdf" style="display:none" onchange="refHandleFileChosen(this)">
+
+<script>
+// ============================================================
+// PASSWORD
+// ============================================================
+const _pw = atob('cGlsYXRlczIwMjQ='); // pilates2024
+
+// ============================================================
+// APPARATUS (Story 6 — full, extensible list)
+// ============================================================
+const DEFAULT_APPARATUS = ['Reformer','Mat','High Chair','Wunda Chair','Pedi Pull','Foot Corrector','Cadillac','Tower Mat','Spine Corrector','Small Barrel','Ladder Barrel','Wall/Ladder Wall','Dumbbells','Guillotine','Baby Arm Chair','Magic Circle','Stability Ball','Resistance Bands','Small Props'];
+let APPARATUS_LIST = [...DEFAULT_APPARATUS];
+const LEVELS = ['Beginner','Intermediate 1','Intermediate 2','Advanced'];
+const LEVEL_TO_DIFFICULTY_POOL = {
+  'Beginner': ['beginner'],
+  'Intermediate 1': ['beginner','intermediate'],
+  'Intermediate 2': ['intermediate'],
+  'Advanced': ['intermediate','advanced'],
+};
+
+// ============================================================
+// MOVEMENT / EXERCISE CATALOG
+// ============================================================
+const MOVEMENTS = [
+  // MAT
+  {id:'m01',name:'The Hundred',desc:'Breathing warm-up that activates the powerhouse with rhythmic arm pumps while holding a curl.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury','cervical strain','pregnancy']},
+  {id:'m02',name:'The Roll Up',desc:'A slow, articulate spinal flexion from lying to seated and back, building deep abdominal control.',apparatus:'Mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','herniated disc','osteoporosis']},
+  {id:'m03',name:'The Roll Over',desc:'Legs travel overhead in an inverted stretch that lengthens the spine and opens the hamstrings.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','glaucoma','high blood pressure']},
+  {id:'m04',name:'Single Leg Circle',desc:'One leg traces circles in the hip socket to mobilise the joint and stabilise the pelvis.',apparatus:'Mat',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m05',name:'Rolling Like a Ball',desc:'A massage for the spine: rolling back and forth balanced on the sacrum with knees hugged in.',apparatus:'Mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['osteoporosis','scoliosis','lower back pain']},
+  {id:'m06',name:'Single Leg Stretch',desc:'Alternating knee-to-chest pulls with a lifted curl — the foundation of the abdominal series.',apparatus:'Mat',difficulty:'beginner',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'m07',name:'Double Leg Stretch',desc:'Arms and legs extend long then circle back in, creating full-body lengthening from a curled position.',apparatus:'Mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','herniated disc']},
+  {id:'m08',name:'Single Straight Leg Stretch',desc:'Scissoring straight legs with a dynamic pulse to the chest, challenging hamstring flexibility and core stability.',apparatus:'Mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','hamstring injury']},
+  {id:'m09',name:'Double Straight Leg Stretch',desc:'Both straight legs lower and lift while the upper back stays curled, demanding intense abdominal work.',apparatus:'Mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','herniated disc']},
+  {id:'m10',name:'Crisscross',desc:'Rotation of the torso to alternate knees creates oblique strengthening from a curled position.',apparatus:'Mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'m11',name:'Spine Stretch Forward',desc:'A seated forward fold with a scooped spine that decompresses the vertebrae and lengthens the back.',apparatus:'Mat',difficulty:'beginner',section:'cool-down',bodyRegion:'back',contra:['hamstring injury','sciatica']},
+  {id:'m12',name:'Open Leg Rocker',desc:'Balancing and rolling on the spine with wide straight legs outstretched, building control and flexibility.',apparatus:'Mat',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['osteoporosis','lower back pain','hip flexor injury']},
+  {id:'m13',name:'Corkscrew',desc:'Legs trace a corkscrew pattern from inverted, demanding full spinal and hip control.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','shoulder injury']},
+  {id:'m14',name:'The Saw',desc:'Seated spinal rotation with a forward reach — wrings out the torso and opens the back body.',apparatus:'Mat',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:['sciatica','hamstring injury']},
+  {id:'m15',name:'Swan Prep',desc:'A gentle back extension lifting the chest from prone — the foundational back strengthener.',apparatus:'Mat',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis','pregnancy']},
+  {id:'m16',name:'Swan Dive',desc:'A rocking arc from head to toes in back extension, building spinal strength and momentum control.',apparatus:'Mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis','wrist injury']},
+  {id:'m17',name:'Single Leg Kick',desc:'Prone double-pulse kicks alternate legs while the upper body lifts in back extension.',apparatus:'Mat',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['knee injury','lower back pain']},
+  {id:'m18',name:'Double Leg Kick',desc:'Both heels kick to the seat then arms reach back as the chest lifts — a powerful back opener.',apparatus:'Mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['knee injury','lower back pain','shoulder injury']},
+  {id:'m19',name:'Neck Pull',desc:'A challenging roll-up variation with hands behind the head that builds deep flexion strength.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','osteoporosis']},
+  {id:'m20',name:'Scissors',desc:'Inverted leg scissors in the air, controlled from a strong supported mid-back position.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','shoulder injury','high blood pressure']},
+  {id:'m21',name:'Bicycle',desc:'Inverted bicycle legs blend scissoring with deep hip flexion and extension overhead.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','lower back pain','high blood pressure']},
+  {id:'m22',name:'Shoulder Bridge',desc:'A supine bridge series that isolates the hamstrings and glutes while stabilising the pelvis.',apparatus:'Mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['knee injury','shoulder injury']},
+  {id:'m23',name:'Spine Twist',desc:'Seated rotations with arms outstretched emphasise thoracic mobility and oblique engagement.',apparatus:'Mat',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:['sciatica','disc herniation']},
+  {id:'m24',name:'Jackknife',desc:'From inverted hips, legs power upward and then float down — an advanced inversion and control exercise.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','shoulder injury','high blood pressure','glaucoma']},
+  {id:'m25',name:'Side Kick Front/Back',desc:'Lying on the side, the top leg swings to the front and back to challenge hip stability and flexibility.',apparatus:'Mat',difficulty:'beginner',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m26',name:'Side Kick Up/Down',desc:'The top leg lifts and lowers with control, building outer hip and adductor strength.',apparatus:'Mat',difficulty:'beginner',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m27',name:'Side Kick Circles',desc:'Small precise circles of the lifted leg work the entire hip girdle in a stabilised side position.',apparatus:'Mat',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'m28',name:'Teaser',desc:'The iconic V-balance — rolling up to a balance on the sit bones with straight legs lifted.',apparatus:'Mat',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury','hamstring injury']},
+  {id:'m29',name:'Hip Circles',desc:'In a high side-plank, hips draw large circles to challenge core strength and shoulder stability.',apparatus:'Mat',difficulty:'advanced',section:'side body',bodyRegion:'core',contra:['shoulder injury','wrist injury']},
+  {id:'m30',name:'Swimming',desc:'Opposite arm and leg lift in prone alternating rhythmically, building back strength and coordination.',apparatus:'Mat',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','shoulder injury']},
+  {id:'m31',name:'Leg Pull Front',desc:'A plank variation where one leg lifts at a time, demanding full-body tension and balance.',apparatus:'Mat',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'m32',name:'Leg Pull Back',desc:'Reverse plank with alternating leg lifts — a demanding posterior chain and shoulder exercise.',apparatus:'Mat',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury','lower back pain']},
+  {id:'m33',name:'Seal',desc:'A playful cool-down: rolling back and forth in a compact ball with clapping feet.',apparatus:'Mat',difficulty:'beginner',section:'cool-down',bodyRegion:'core',contra:['osteoporosis','lower back pain']},
+  {id:'m34',name:'Push Up',desc:'Classical Pilates push-ups follow a roll-down: the spine articulates down then pressing up off the hands.',apparatus:'Mat',difficulty:'intermediate',section:'cool-down',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'m35',name:'Mermaid Stretch',desc:'A seated side bend reaching over to lengthen the waist and intercostals.',apparatus:'Mat',difficulty:'beginner',section:'cool-down',bodyRegion:'back',contra:[]},
+  {id:'m36',name:'Pelvic Curl',desc:'Articulating the spine from neutral up to a bridge and back down, segment by segment.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['lower back pain']},
+  {id:'m37',name:'Chest Lift',desc:'A controlled spinal flexion to build the foundation for all curl-up work.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury']},
+  {id:'m38',name:'Cat-Cow',desc:'Spinal flexion and extension on all fours to warm up the spine and connect breath to movement.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['wrist injury']},
+  {id:'m39',name:'Hip Flexor Lunge',desc:'A standing or kneeling lunge that opens the front of the hip, releasing tension before class.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'hips',contra:['knee injury']},
+  {id:'m40',name:'Thread the Needle',desc:'From all fours, one arm threads under to rotate the thoracic spine, releasing upper back tightness.',apparatus:'Mat',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['shoulder injury']},
+
+  // REFORMER
+  {id:'r01',name:'Footwork Parallel',desc:'Feet hip-width on the bar, pressing out and returning — the reformer foundation for leg strength.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury','hip replacement']},
+  {id:'r02',name:'Footwork V Position',desc:'Heels together in a small V, pressing out to work the inner thighs and rotators.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury','hip replacement']},
+  {id:'r03',name:'Footwork Arches',desc:'Mid-foot on the bar engages the intrinsic foot muscles and calf in the press.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['plantar fasciitis']},
+  {id:'r04',name:'Leg Circles on Reformer',desc:'From the straps, legs trace full circles to open the hip joint and lengthen the leg.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+  {id:'r05',name:'Frog on Reformer',desc:'Bent knees open and extend in a frog-like movement from the straps, working inner thighs and hips.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'hips',contra:['hip replacement','groin injury']},
+  {id:'r06',name:'Running on Reformer',desc:'Alternating heel raises while the carriage moves simulate running gait for calf and ankle mobility.',apparatus:'Reformer',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['plantar fasciitis','ankle injury']},
+  {id:'r07',name:'Reformer Hundred',desc:'The classical Hundred performed on the reformer with added spring resistance for the arm pumps.',apparatus:'Reformer',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['neck injury','lower back pain']},
+  {id:'r08',name:'Short Spine Massage',desc:'A spinal articulation using the straps: hips peel up overhead and roll back down slowly.',apparatus:'Reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['neck injury','osteoporosis','lower back pain']},
+  {id:'r09',name:'Knee Stretch Round',desc:'On all fours in a C-curve, press the carriage back and pull in — emphasising the powerhouse.',apparatus:'Reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'core',contra:['wrist injury','knee injury']},
+  {id:'r10',name:'Knee Stretch Arched',desc:'All fours with an arched back, pressing back to build back extension strength and hip flexor opening.',apparatus:'Reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'back',contra:['wrist injury','knee injury','lower back pain']},
+  {id:'r11',name:'Elephant on Reformer',desc:'Inverted V shape: pressing back from tented hands and feet, lengthening the posterior chain.',apparatus:'Reformer',difficulty:'intermediate',section:'footwork',bodyRegion:'back',contra:['wrist injury','hamstring injury']},
+  {id:'r12',name:'Long Stretch',desc:'Plank position on the reformer, moving the carriage with the arms — demanding full-body control.',apparatus:'Reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'full body',contra:['wrist injury','shoulder injury']},
+  {id:'r13',name:'Down Stretch',desc:'An arched plank press that builds back extension and scapular stability.',apparatus:'Reformer',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','wrist injury','shoulder injury']},
+  {id:'r14',name:'Up Stretch',desc:'Transitioning from a plank to a downward-dog shape on the reformer, demanding deep hip hinge.',apparatus:'Reformer',difficulty:'advanced',section:'back extension',bodyRegion:'full body',contra:['wrist injury','hamstring injury']},
+  {id:'r15',name:'Stomach Massage Round',desc:'Seated at the edge of the carriage in a C-curve, pressing out and in with the legs.',apparatus:'Reformer',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain']},
+  {id:'r16',name:'Stomach Massage Hands Back',desc:'Stomach massage variation with hands behind, opening the chest and demanding more spinal mobility.',apparatus:'Reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'r17',name:'Rowing Front',desc:'A sweeping arm gesture from C-curve to extension, tracing the classical rowing arc.',apparatus:'Reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['shoulder injury','lower back pain']},
+  {id:'r18',name:'Rowing Back',desc:'Elbows press back then circle forward, opening the chest and strengthening the posterior shoulder.',apparatus:'Reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'r19',name:'Backstroke on Reformer',desc:'Supine in the straps, arms sweep wide and down in a full-body integrative movement.',apparatus:'Reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'full body',contra:['shoulder injury','lower back pain']},
+  {id:'r20',name:'Teaser on Reformer',desc:'The iconic V-balance performed on the moving reformer carriage — extreme core challenge.',apparatus:'Reformer',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury']},
+
+  // CADILLAC
+  {id:'c01',name:'Leg Springs Supine',desc:'Lying on the cadillac with leg springs, pressing legs away and returning to work core and legs together.',apparatus:'Cadillac',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip replacement']},
+  {id:'c02',name:'Arm Springs Standing',desc:'Standing facing the cadillac, spring-resisted arm movements build scapular control and posture.',apparatus:'Cadillac',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'c03',name:'Push Through Bar',desc:'Seated, the push-through bar presses overhead and comes forward — spinal and shoulder mobility.',apparatus:'Cadillac',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['shoulder injury','lower back pain']},
+  {id:'c04',name:'Roll Back on Cadillac',desc:'Holding the push-through bar, articulate back against spring resistance for deep abdominal control.',apparatus:'Cadillac',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','osteoporosis']},
+  {id:'c05',name:'Tower on Cadillac',desc:'Legs go overhead to a full inversion supported by the tower bar, building advanced control.',apparatus:'Cadillac',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['neck injury','high blood pressure','glaucoma']},
+  {id:'c06',name:'Cat Stretch Cadillac',desc:'From kneeling, the bar assists a deep spinal stretch through full flexion and extension.',apparatus:'Cadillac',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['wrist injury','knee injury']},
+  {id:'c07',name:'Hanging on Cadillac',desc:'Hanging from the bar decompresses the spine and builds grip, shoulder, and core strength.',apparatus:'Cadillac',difficulty:'intermediate',section:'cool-down',bodyRegion:'back',contra:['shoulder injury','wrist injury']},
+  {id:'c08',name:'Mermaid on Cadillac',desc:'Side bending with spring support creates a deep lateral stretch through the entire side body.',apparatus:'Cadillac',difficulty:'intermediate',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'c09',name:'Pole Series',desc:'A standing series with the vertical pole for balance, rotation, and upper-body connection.',apparatus:'Cadillac',difficulty:'intermediate',section:'warm-up',bodyRegion:'full body',contra:[]},
+  {id:'c10',name:'Teaser on Cadillac',desc:'The spring-supported teaser builds toward the full balance while giving feedback on alignment.',apparatus:'Cadillac',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','hip flexor injury']},
+
+  // WUNDA CHAIR
+  {id:'w01',name:'Footwork on Chair',desc:'Pressing the pedal down and up with various foot positions to build leg and core connection.',apparatus:'Wunda Chair',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['knee injury']},
+  {id:'w02',name:'Pike on Chair',desc:'From a plank on the chair, hips pike up as the pedal is pressed down — extreme core demand.',apparatus:'Wunda Chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['wrist injury','shoulder injury','lower back pain']},
+  {id:'w03',name:'Mountain Climb on Chair',desc:'Alternating knee drives while in a plank on the chair create dynamic core and hip flexor work.',apparatus:'Wunda Chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'full body',contra:['wrist injury','knee injury']},
+  {id:'w04',name:'Tendon Stretch on Chair',desc:'Balancing on the pedal, heels lower and raise for ankle and posterior chain strength.',apparatus:'Wunda Chair',difficulty:'advanced',section:'back extension',bodyRegion:'legs',contra:['ankle injury','balance issues']},
+  {id:'w05',name:'Pull Up on Chair',desc:'Seated, hands press down as the body lifts — building powerful shoulder depression and core support.',apparatus:'Wunda Chair',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['shoulder injury','wrist injury']},
+  {id:'w06',name:'Swan on Chair',desc:'Draped over the chair in prone, the pedal is pressed to lift into a back extension arc.',apparatus:'Wunda Chair',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis']},
+  {id:'w07',name:'Seated Pumping',desc:'Seated upright, the pedal is pumped rhythmically to build hip flexor coordination and core engagement.',apparatus:'Wunda Chair',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip flexor injury']},
+  {id:'w08',name:'Side Sit-Up on Chair',desc:'Side-lying off the chair, the body curls up laterally — an advanced oblique strengthener.',apparatus:'Wunda Chair',difficulty:'advanced',section:'side body',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+
+  // SMALL BARREL
+  {id:'b01',name:'Side Stretch on Barrel',desc:'Draped side-on over the barrel, the body lengthens in a supported lateral arc — a deep side stretch.',apparatus:'Small Barrel',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'b03',name:'Abdominals on Barrel',desc:'Seated over the barrel with feet hooked, rolling back for a deeply supported abdominal curl.',apparatus:'Small Barrel',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','osteoporosis']},
+  {id:'b07',name:'Side Kick on Barrel',desc:'Side-lying on the arc, the top leg swings with a bigger range than the mat equivalent allows.',apparatus:'Small Barrel',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','hip labrum injury']},
+
+  // LADDER BARREL
+  {id:'b02',name:'Back Extension on Barrel',desc:'Lying prone over the arc, arms sweep up as the torso lifts into a supported back extension.',apparatus:'Ladder Barrel',difficulty:'intermediate',section:'back extension',bodyRegion:'back',contra:['lower back pain','spondylolisthesis']},
+  {id:'b04',name:'Hip Circles on Barrel',desc:'Seated on top of the barrel, hips circle to mobilise the hip joint and challenge balance.',apparatus:'Ladder Barrel',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement']},
+  {id:'b05',name:'Horseback on Barrel',desc:'Seated astride the arc in a high hip-flexed position, arms reach and rotate — an advanced balance.',apparatus:'Ladder Barrel',difficulty:'advanced',section:'abdominal series',bodyRegion:'core',contra:['hip replacement','lower back pain']},
+  {id:'b06',name:'Tendon Stretch on Barrel',desc:'Balanced on the barrel edge, heels lift and lower to challenge ankle strength and proprioception.',apparatus:'Ladder Barrel',difficulty:'advanced',section:'cool-down',bodyRegion:'legs',contra:['ankle injury']},
+
+  // STABILITY BALL (legacy carryover apparatus)
+  {id:'s01',name:'Ball Roll Out',desc:'Kneeling, arms roll the ball forward as the body hinges — a deep abdominal and shoulder challenge.',apparatus:'Stability Ball',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','wrist injury']},
+  {id:'s02',name:'Plank on Ball',desc:'Forearms on the ball in a plank position — the unstable surface amplifies core demand significantly.',apparatus:'Stability Ball',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'s03',name:'Hamstring Curl on Ball',desc:'Supine bridge with heels on the ball, curling it toward the hips — strong posterior chain work.',apparatus:'Stability Ball',difficulty:'intermediate',section:'back extension',bodyRegion:'legs',contra:['knee injury','lower back pain']},
+  {id:'s04',name:'Bridge on Ball',desc:'Shoulders on the ball, hips lift to a tabletop — a supported and accessible glute and hamstring exercise.',apparatus:'Stability Ball',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'s05',name:'Ball Pass',desc:'Lying supine, the ball passes from hands to feet and back — a full-range core integration challenge.',apparatus:'Stability Ball',difficulty:'intermediate',section:'abdominal series',bodyRegion:'core',contra:['lower back pain','shoulder injury']},
+  {id:'s06',name:'Side Bend on Ball',desc:'Side-lying over the ball with feet stacked, the body arcs up for a loaded lateral stretch.',apparatus:'Stability Ball',difficulty:'beginner',section:'side body',bodyRegion:'back',contra:[]},
+  {id:'s07',name:'Back Extension on Ball',desc:'Prone over the ball, the torso lifts in extension — supported and accessible back strengthening.',apparatus:'Stability Ball',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['lower back pain']},
+  {id:'s08',name:'Seated Balance on Ball',desc:'Sitting tall on the ball and lifting one foot at a time to challenge postural reflexes and core.',apparatus:'Stability Ball',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['balance issues']},
+
+  // MAGIC CIRCLE
+  {id:'mc01',name:'Inner Thigh Press Standing',desc:'Standing with the circle between the thighs, pulsing inward to activate the adductors.',apparatus:'Magic Circle',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['hip replacement','groin injury']},
+  {id:'mc02',name:'Inner Thigh Press Supine',desc:'Lying with the circle between the knees, pressing inward to work the inner thighs.',apparatus:'Magic Circle',difficulty:'beginner',section:'footwork',bodyRegion:'legs',contra:['groin injury']},
+  {id:'mc03',name:'Arm Press Seated',desc:'Seated with the circle between the palms, pressing in and releasing to work the chest and shoulders.',apparatus:'Magic Circle',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury','wrist injury']},
+  {id:'mc04',name:'Chest Expansion with Circle',desc:'Standing, the circle is held overhead and pulled apart gently to open the chest and strengthen upper back.',apparatus:'Magic Circle',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'mc05',name:'Hundred with Circle',desc:'The Hundred performed with the circle between the ankles, adding an inner thigh challenge.',apparatus:'Magic Circle',difficulty:'intermediate',section:'warm-up',bodyRegion:'core',contra:['neck injury','groin injury']},
+  {id:'mc06',name:'Side Bend with Circle',desc:'Standing with the circle overhead, bending side to side to deepen the lateral stretch.',apparatus:'Magic Circle',difficulty:'intermediate',section:'side body',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'mc07',name:'Leg Lift with Circle',desc:'Side-lying with the circle between the ankles, lifting both legs to work the outer hip and inner thigh.',apparatus:'Magic Circle',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','groin injury']},
+  {id:'mc08',name:'Standing Series with Circle',desc:'A series of standing exercises with the circle — pressing in at various angles to challenge posture.',apparatus:'Magic Circle',difficulty:'intermediate',section:'footwork',bodyRegion:'full body',contra:['balance issues']},
+
+  // RESISTANCE BANDS (legacy carryover apparatus)
+  {id:'rb01',name:'Seated Row with Band',desc:'Seated with the band looped around feet, rows build upper back strength and postural alignment.',apparatus:'Resistance Bands',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'rb02',name:'Chest Press with Band',desc:'Band anchored behind, pressing forward to work the chest and front of the shoulder.',apparatus:'Resistance Bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'rb03',name:'Lat Pulldown with Band',desc:'Band overhead, pulling down to engage the lats and build shoulder stability.',apparatus:'Resistance Bands',difficulty:'beginner',section:'back extension',bodyRegion:'back',contra:['shoulder injury']},
+  {id:'rb04',name:'Standing Side Kick with Band',desc:'Band around the ankle provides resistance to the side kick, intensifying hip abductor work.',apparatus:'Resistance Bands',difficulty:'intermediate',section:'side body',bodyRegion:'hips',contra:['hip replacement','ankle injury']},
+  {id:'rb05',name:'Bicep Curl with Band',desc:'Standing on the band, curling both arms to build bicep and arm strength.',apparatus:'Resistance Bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['elbow injury']},
+  {id:'rb06',name:'Shoulder Series with Band',desc:'A series of shoulder movements — front raise, lateral raise, and external rotation — with the band.',apparatus:'Resistance Bands',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'rb07',name:'Hamstring Stretch with Band',desc:'Supine, band around the foot to assist a long, supported hamstring stretch.',apparatus:'Resistance Bands',difficulty:'beginner',section:'cool-down',bodyRegion:'legs',contra:['hamstring injury']},
+  {id:'rb08',name:'Footwork with Band',desc:'Seated with band around feet, leg presses against resistance to build hip and leg strength.',apparatus:'Resistance Bands',difficulty:'intermediate',section:'footwork',bodyRegion:'legs',contra:['hip replacement']},
+
+  // SMALL PROPS (legacy carryover apparatus)
+  {id:'sp01',name:'Foam Roller Spine Release',desc:'Lying on the roller along the spine, arms open wide for a passive thoracic extension and chest opener.',apparatus:'Small Props',difficulty:'beginner',section:'warm-up',bodyRegion:'back',contra:['osteoporosis']},
+  {id:'sp02',name:'Theraband Foot Exercises',desc:'Seated, the theraband provides resistance for pointing, flexing, and circling the foot.',apparatus:'Small Props',difficulty:'beginner',section:'warm-up',bodyRegion:'legs',contra:['ankle injury']},
+  {id:'sp03',name:'Weighted Ball Arm Series',desc:'Standing, a light weighted ball is used for controlled arm circles and presses to build shoulder endurance.',apparatus:'Small Props',difficulty:'beginner',section:'warm-up',bodyRegion:'arms',contra:['shoulder injury']},
+  {id:'sp04',name:'Small Ball Between Knees Hundred',desc:'The Hundred with a small ball squeezed between the knees to activate the inner thighs.',apparatus:'Small Props',difficulty:'beginner',section:'warm-up',bodyRegion:'core',contra:['neck injury','groin injury']},
+  {id:'sp05',name:'Balance Board Standing',desc:'Standing on a balance board to improve proprioception, ankle stability, and postural reflexes.',apparatus:'Small Props',difficulty:'intermediate',section:'warm-up',bodyRegion:'full body',contra:['ankle injury','balance issues']},
+];
+
+// Best-effort structured link from legacy free-text contraindications to the condition library (Story 3/10 warnings)
+const CONTRA_TO_CONDITION = {
+  'lower back pain':'Lower back pain','herniated disc':'Herniated disc','disc herniation':'Herniated disc',
+  'hip replacement':'Hip replacement','shoulder injury':'Shoulder impingement','osteoporosis':'Osteoporosis',
+  'sciatica':'Sciatica','knee injury':'Knee osteoarthritis','pregnancy':'Pregnancy (2nd/3rd trimester)',
+  'wrist injury':'Carpal tunnel syndrome',
+};
+MOVEMENTS.forEach(m=>{
+  m.avoidedByConditions = [...new Set((m.contra||[]).map(c=>{
+    const lc = c.toLowerCase();
+    const key = Object.keys(CONTRA_TO_CONDITION).find(k=>lc.includes(k));
+    return key ? CONTRA_TO_CONDITION[key] : null;
+  }).filter(Boolean))];
+});
+
+const SESSION_MOVEMENTS = {40:13,50:17,60:22};
+const SECTION_ORDER = ['warm-up','footwork','abdominal series','side body','back extension','cool-down'];
+const SECTION_DISTRIBUTION = {
+  13: {'warm-up':2,'footwork':2,'abdominal series':3,'side body':2,'back extension':2,'cool-down':2},
+  17: {'warm-up':3,'footwork':3,'abdominal series':4,'side body':3,'back extension':3,'cool-down':1},
+  22: {'warm-up':3,'footwork':3,'abdominal series':5,'side body':3,'back extension':4,'cool-down':4}
+};
+
+// ============================================================
+// CONDITIONS (Story 3 / 10)
+// ============================================================
+const CONDITIONS_LIBRARY = [
+  {name:'Lower back pain', blurb:'Often linked to reduced lumbar segmental control or hip flexor tightness limiting neutral-spine strategies under load.', favored:['Mat','Cadillac'], avoided:['Deep flexion series','Loaded rotation']},
+  {name:'Herniated disc', blurb:'Combined flexion and rotation tends to increase disc loading; extension-biased, traction-friendly work is generally better tolerated.', favored:['Cadillac','Wall/Ladder Wall'], avoided:['Roll Up / Roll Over','Weighted twisting']},
+  {name:'Hip replacement', blurb:'Early post-op precautions commonly limit deep hip flexion, internal rotation and adduction past midline.', favored:['Reformer footwork','Mat bridging'], avoided:['Deep flexion series','Cross-body leg work']},
+  {name:'Shoulder impingement', blurb:'Overhead loading in internal rotation tends to narrow the subacromial space; scapular stability work is usually favored first.', favored:['Magic Circle presses','Scapular stability drills'], avoided:['Push Ups','Overhead end-range reaching']},
+  {name:'Osteoporosis', blurb:'Spinal flexion and rotation under load carry higher fracture risk; extension-biased, weight-bearing strengthening is generally preferred.', favored:['Standing weight-bearing work','Extension series'], avoided:['Roll Up','Saw / Teaser-style flexion']},
+  {name:'Sciatica', blurb:'Prolonged flexion or seated positions can aggravate nerve irritation; extension-based relief positions are often more comfortable.', favored:['Extension-based mat work','Gentle nerve glides'], avoided:['Seated forward folds','Flexed hamstring stretches']},
+  {name:'Knee osteoarthritis', blurb:'Deep knee flexion under load tends to increase joint compression; mid-range, closed-chain work is usually better tolerated.', favored:['Reformer footwork (mid-range)','Cadillac non-weight-bearing work'], avoided:['Deep lunges','High-rep knee flexion']},
+  {name:'Pregnancy (2nd/3rd trimester)', blurb:'Prone and supine positions become less comfortable and less advisable as pregnancy progresses; side-lying and seated supported work is favored.', favored:['Side-lying series','Seated supported work'], avoided:['Prone work','Breath-holding effort']},
+  {name:'Hypermobility (EDS)', blurb:'Joint laxity means end-range stretching offers little benefit and can reduce stability; controlled mid-range work with muscular support is preferred.', favored:['Closed-chain stability work','Controlled mid-range strengthening'], avoided:['End-range circles','Ballistic stretching']},
+  {name:'Carpal tunnel syndrome', blurb:'Sustained weight-bearing through an extended wrist can aggravate median nerve compression; forearm or fist-supported variations are often better tolerated.', favored:['Forearm-support variations','Fist-support plank options'], avoided:['Prolonged flat-palm planks','Extended-wrist push-ups']},
+];
+let CUSTOM_CONDITIONS = [];
+const SYMPTOM_LOCATIONS = ['Lower back','Neck','Shoulder','Hip','Knee','Wrist','Ankle','Other'];
+
+// ============================================================
+// GOALS (4 S's) / 3-MONTH PLAN / WARM-UP POOL
+// ============================================================
+const GOAL_TAGS = {
+  strengthen: {label:'Strengthen', bg:'#7a9e82', color:'#fff'},
+  stretch: {label:'Stretch', bg:'#f0e8dc', color:'#8a7554'},
+  stamina: {label:'Stamina', bg:'#fdf0eb', color:'#d97054'},
+  stability: {label:'Stability', bg:'#c8dcc9', color:'#3f5c47'},
+};
+const PLAN_TEMPLATE = [
+  {apparatus:'Reformer', focus:'Footwork & leg alignment'},
+  {apparatus:'Mat', focus:'Core stabilization'},
+  {apparatus:'Cadillac', focus:'Spinal articulation'},
+  {apparatus:'Wunda Chair', focus:'Single-leg strength'},
+  {apparatus:'Reformer', focus:'Full-body integration'},
+  {apparatus:'Spine Corrector', focus:'Extension & posture'},
+  {apparatus:'Mat', focus:'Rotational control'},
+  {apparatus:'Ladder Barrel', focus:'Hip mobility'},
+  {apparatus:'Reformer', focus:'Balance & coordination'},
+  {apparatus:'Magic Circle', focus:'Adductor / abductor strength'},
+  {apparatus:'Cadillac', focus:'Traction & decompression'},
+  {apparatus:'Mat', focus:'Progress review'},
+];
+const WARMUP_POOL = ['Cat-Cow','Thread the Needle','Hip Flexor Lunge','Pelvic Curl','Standing Roll Down','Arm Circles','Neck Release','Ankle Circles'];
+const LEVEL_COLORS = { beginner:{bg:'#e8f4ea',color:'#3d7a47'}, intermediate:{bg:'#fdf0dc',color:'#b8720a'}, advanced:{bg:'#fbe4ee',color:'#b13d78'} };
+const AVATAR_COLORS = { beginner:'#7a9e82', intermediate:'#c99a3f', advanced:'#c0397a' };
+
+// ============================================================
+// CLASS BUILDER THEMES (Story 9)
+// ============================================================
+const THEMES = [
+  {key:'full-body', name:'Full Body Connection', desc:'A balanced flow linking upper and lower body through the powerhouse.', accent:'#5e8067', iconBg:'#eaf1e9',
+    exercises:['The Hundred','Roll Up','Single Leg Circles','Plank to Pike','Swimming','Side Plank Reach','Spine Stretch Forward','Standing Roll Down']},
+  {key:'stretch-strength', name:'Stretch & Strength', desc:'Alternates deep stretching with controlled strengthening work.', accent:'#8a7554', iconBg:'#f0e8dc',
+    exercises:['Cat-Cow','The Hundred','Single Leg Stretch','Shoulder Bridge','Mermaid Stretch','Swan Prep','Spine Twist','Seal']},
+  {key:'lateral', name:'Lateral Focus', desc:'Side-body work for obliques, hips and lateral stability.', accent:'#c0397a', iconBg:'#fbe4ee',
+    exercises:['Side Kick Series','Mermaid Stretch','Side Plank','Standing Side Bend','Oblique Roll Back','Spine Twist','Side Stretch on Barrel']},
+  {key:'core', name:'Core Foundations', desc:'Classical abdominal-series progressions from the ground up.', accent:'#d97054', iconBg:'#fdf0eb',
+    exercises:['The Hundred','Chest Lift','Single Leg Stretch','Double Leg Stretch','Criss Cross','Plank Hold','Roll Up','Pelvic Curl']},
+  {key:'postural', name:'Postural Reset', desc:'Gentle mobility and alignment work for desk-bound clients.', accent:'#c99a3f', iconBg:'#faf1dc',
+    exercises:['Thread the Needle','Cat-Cow','Chest Expansion with Circle','Standing Roll Down','Swan Prep','Seated Spine Twist','Shoulder Series with Band']},
+  {key:'power', name:'Power Flow', desc:'A dynamic, higher-intensity flow for advanced groups.', accent:'#b6604a', iconBg:'#f7e6df',
+    exercises:['Reformer Hundred','Long Stretch Series','Teaser','Side Plank Series','Jackknife','Swimming','Push Up Series']},
+];
+const GENERAL_POOL = ['Roll Over','Corkscrew','Neck Pull','Scissors','Bicycle','Hip Circles','Leg Pull Front','Double Leg Kick','Rolling Like a Ball','Open Leg Rocker','Saw','Boomerang','Control Balance','Hip Twist'];
+
+// ============================================================
+// REFERENCE LIBRARY SEED DOCS (Story 2)
+// ============================================================
+const REFERENCE_DOCS_SEED = [
+  { id:'d1', title:'Return to Life Through Contrology', source:'Joseph H. Pilates, 1945', date:'1945-01-01',
+    excerpt:'The foundational text describing the original method and its philosophy of whole-body conditioning through controlled movement.',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'Contrology Defined', content:'Contrology is the complete coordination of body, mind and spirit. Through Contrology you first purposefully acquire complete control of your own body and then through proper repetition of its exercises you gradually and progressively acquire that natural rhythm and coordination associated with all your subconscious activities.'},
+      {heading:'The Powerhouse', content:'Every exercise in the original sequence is powered from the center of the body — the abdomen, lower back and hips. This "powerhouse" is engaged first, before any limb movement is initiated, and remains active throughout.'},
+      {heading:'Breath as Instruction', content:'Breathing is co-ordinated in such a way as to reeducate the lungs and thereby increase their capacity. Full exhalation is emphasized at the point of greatest exertion in nearly every original exercise.'},
+    ]},
+  { id:'d2', title:'Classical Mat Order Reference', source:'Studio sequencing guide', date:'2024-03-10',
+    excerpt:'A quick-reference for the traditional order of the 34 classical mat exercises, from The Hundred through Push Up.',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'Why Order Matters', content:'The classical sequence builds heat and connection to the powerhouse early, then progressively challenges spinal articulation, rotation, and finally standing integration — each exercise prepares the body for the demand of the next.'},
+      {heading:'Opening Series', content:'The Hundred, Roll Up, Roll Over, Single Leg Circles, Rolling Like a Ball, and the full abdominal series form the opening block, establishing core control before any extension or side-lying work begins.'},
+      {heading:'Closing Series', content:'Side Kick Series, Teaser, Hip Circles, Swimming, and the standing/kneeling finishers (Seal, Push Up) close the sequence, integrating the whole body after the more isolated earlier work.'},
+    ]},
+  { id:'d3', title:'Reformer Repertoire Guide', source:'Studio equipment notes', date:'2024-06-02',
+    excerpt:'Progressions from footwork through advanced reformer exercises, organized by spring tension and carriage control demand.',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'Footwork Foundations', content:'Footwork opens nearly every reformer session: parallel, V-position, and heels-together variations build the leg and pelvic control needed for everything that follows on the carriage.'},
+      {heading:'Carriage Control', content:'As exercises move from footwork into full-body work — Elephant, Long Stretch, Stomach Massage — the demand shifts from leg strength to controlling the carriage itself with the whole body.'},
+      {heading:'Advanced Repertoire', content:'Teaser on Reformer, Rowing sequences, and Backstroke require both the strength and the carriage control built in earlier stages, and are typically reserved for intermediate-2 and advanced clients.'},
+    ]},
+  { id:'d4', title:'Pilates Anatomy Notes', source:'Instructor training notes', date:'2023-11-18',
+    excerpt:'Muscle engagement patterns and movement mechanics behind common cues like "scoop," "zip up," and "lengthen through the crown."',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'The Scoop', content:'Cueing a client to "scoop" the abdominals refers to drawing the transverse abdominis inward and the pelvic floor upward — a co-contraction that stabilizes the lumbar spine before movement begins.'},
+      {heading:'Neutral vs Imprint', content:'Neutral spine preserves the natural lumbar curve; imprint flattens the low back into the mat by posteriorly tilting the pelvis. Choosing between them changes which muscles are asked to stabilize the pelvis.'},
+      {heading:'Scapular Stability', content:'"Zip up and hollow" cues engage the lower trapezius and serratus anterior to depress and stabilize the shoulder blades, protecting the shoulder joint during arm-loaded work like Swimming or Leg Pull Front.'},
+    ]},
+  { id:'d5', title:'Client Intake Best Practices', source:'Studio operations handbook', date:'2025-01-22',
+    excerpt:'Guidance for structuring a first-session intake so it feels thorough without overwhelming a new client.',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'Lead With Goals', content:'Opening the assessment with goals rather than health history sets a positive tone and gives context for every question that follows.'},
+      {heading:'Sectioned, Not Long', content:'Breaking the intake into visible sections — Goals, Lifestyle, Experience, Contraindications — with a saved progress indicator makes the process feel manageable and resumable.'},
+      {heading:'Contraindications Last', content:'Placing health and injury questions after rapport has been built tends to produce more complete, candid answers than leading with them.'},
+    ]},
+  { id:'d6', title:'Injury Modification Handbook', source:'Studio safety reference', date:'2024-09-05',
+    excerpt:'Common modifications for typical contraindications, organized by movement pattern rather than by diagnosis.',
+    fullText:null, fileKey:null, linkedExerciseIds:[],
+    sections:[
+      {heading:'Flexion-Sensitive Presentations', content:'For clients with disc-related or osteoporosis precautions, replace deep flexion series (Roll Up, Roll Over, Teaser) with extension-biased or neutral-spine alternatives that achieve a similar training effect.'},
+      {heading:'Hip-Precaution Presentations', content:'Post-surgical hip precautions typically rule out deep flexion, internal rotation and cross-body adduction — footwork in a safe range and side-lying work outside the precaution zone remain effective substitutes.'},
+      {heading:'General Principle', content:'Modify the demand, not the intention: the goal of an exercise (e.g. hip stability, spinal articulation) can almost always be preserved with a different apparatus or range of motion.'},
+    ]},
+];
+let REFERENCE_DOCS = [];
+
+// ============================================================
+// STATE
+// ============================================================
+let VIEW = 'clients'; // clients | sessionBuilder | classBuilder | referenceLibrary
+let CLIENT_VIEW = 'list'; // list | profile
+let SELECTED_CLIENT_ID = null;
+let PROFILE_TAB = 'overview'; // overview | health | plan | assessment | handoff
+let HEALTH_STATE = { symptomFormOpen:false, location:SYMPTOM_LOCATIONS[0], description:'' };
+let PLAN_EDITING_WEEK = null;
+let PLAN_EDIT_DRAFT = { apparatus:'', focus:'' };
+let ASSESSMENT_EXPANDED = 'goals';
+
+let MODAL = null; // {type, ...}
+let PANEL = null; // {type, ...}
+
+let SB = null; // session builder working state
+let CB = { screen:'themes', themeKey:null, classExercises:[], originalExercises:[], showAddPanel:false, classNameInput:'' };
+let REF = { screen:'list', search:'', activeDocId:null, activeSectionIndex:null, uploading:false };
+
+let DRAG_CTX = null; // {kind, listRef getter info} for exercise drag-reorder in Session Builder
+
+// ============================================================
+// PERSISTENCE
+// ============================================================
+let clients = [];
+let sessions = {}; // {sessionId: sessionRecord}
+let classLibrary = [];
+
+function safeParse(key, fallback){
+  try { const v = JSON.parse(localStorage.getItem(key)); return v==null?fallback:v; } catch(e){ return fallback; }
+}
+function persist(){
+  localStorage.setItem('sg_clients', JSON.stringify(clients));
+  localStorage.setItem('sg_sessions', JSON.stringify(sessions));
+  localStorage.setItem('sg_class_library', JSON.stringify(classLibrary));
+  localStorage.setItem('sg_apparatus', JSON.stringify(APPARATUS_LIST));
+  localStorage.setItem('sg_custom_conditions', JSON.stringify(CUSTOM_CONDITIONS));
+}
+
+function newDefaultAssessment(){
+  return {
+    goals:{complete:false, fields:[{label:'Primary goal', value:'—'}]},
+    lifestyle:{complete:false, fields:[{label:'Occupation', value:'—'}]},
+    experience:{complete:false, fields:[{label:'Prior Pilates experience', value:'—'}]},
+    contraindications:{complete:false, fields:[{label:'Known conditions', value:'None on file'}]},
+  };
+}
+
+function migrateClient(old){
+  return {
+    id: old.id, name: old.name, age: old.age, experience: old.experience||'beginner',
+    sessionLength: old.sessionLength||50, classesPerWeek: old.classesPerWeek||2,
+    goals: old.goals||'', repeatClasses: !!old.repeatClasses,
+    conditions: [], symptoms: [], assessment: newDefaultAssessment(),
+    planStartDate: null, planWeeksOverride: {}, planHistory: [], recentSessions: [],
+    legacyInjuryNotes: old.injuries||'',
+  };
+}
+
+function daysAgo(n){ return new Date(Date.now()-n*864e5).toISOString().slice(0,10); }
+
+function migrateLegacySessions(rawClasses, migratedClients){
+  const out = {};
+  Object.keys(rawClasses||{}).forEach(clientId=>{
+    const c = migratedClients.find(x=>x.id===clientId);
+    if(!c) return;
+    (rawClasses[clientId]||[]).forEach(old=>{
+      const apparatusCounts = {};
+      (old.movements||[]).forEach(m=>{ const a = m.apparatus||m.equipment||'Mat'; apparatusCounts[a]=(apparatusCounts[a]||0)+1; });
+      const topApparatus = Object.keys(apparatusCounts).sort((a,b)=>apparatusCounts[b]-apparatusCounts[a])[0] || 'Mat';
+      const level = c.experience==='advanced'?'Advanced':c.experience==='intermediate'?'Intermediate 1':'Beginner';
+      const sessId = 'migrated_'+(old.id||newId());
+      const rec = {
+        id: sessId, clientId, date: old.date||Date.now(), format:'freeform', migratedLegacy:true,
+        warmup:{enabled:false, exercises:[]}, goalTags:[],
+        blocks:[{apparatus:topApparatus, level, exercises:(old.movements||[]).map(m=>({...m, apparatus:m.apparatus||m.equipment||topApparatus}))}],
+        planWeekLinked:null, length: old.length||c.sessionLength,
+      };
+      out[sessId] = rec;
+      c.recentSessions.unshift({ id:newId(), date:rec.date, summary:`Imported session — ${topApparatus}`, tags:[], sessionId:sessId });
+    });
+  });
+  return out;
+}
+
+function seedDemoClients(){
+  const mk = (weekNum)=> daysAgo((weekNum-1)*7);
+  return [
+    {
+      id:'cl1', name:'Maya Chen', age:34, experience:'intermediate', sessionLength:50, classesPerWeek:2,
+      goals:'Rebuild core strength post-injury and improve everyday posture at a desk job.', repeatClasses:false,
+      conditions:[{id:'c1', name:'Lower back pain', custom:false}],
+      symptoms:[{id:'s1', date:daysAgo(15), location:'Lower back', description:'Mild ache after long desk days, worse by end of week.'}],
+      planStartDate: mk(5), planWeeksOverride:{}, planHistory:[],
+      assessment:{
+        goals:{complete:true, fields:[{label:'Primary goal', value:'Core strength & posture'},{label:'Secondary goal', value:'Stress relief'}]},
+        lifestyle:{complete:true, fields:[{label:'Occupation', value:'Software engineer (desk-based)'},{label:'Activity level', value:'Lightly active — walks 3x/week'},{label:'Sleep quality', value:'Fair, 6-7 hrs'}]},
+        experience:{complete:true, fields:[{label:'Prior Pilates experience', value:'6 months, mostly mat classes'},{label:'Preferred apparatus', value:'Reformer, Mat'}]},
+        contraindications:{complete:false, fields:[{label:'Known conditions', value:'Lower back pain (see Health tab)'},{label:'Movements to avoid', value:'Deep unsupported flexion'}]},
+      },
+      recentSessions:[
+        {id:newId(), date:daysAgo(3), summary:'Reformer footwork + core stabilization', tags:['strengthen','stability'], sessionId:null},
+        {id:newId(), date:daysAgo(10), summary:'Mat — spinal articulation focus', tags:['stretch'], sessionId:null},
+      ],
+      legacyInjuryNotes:'',
+    },
+    {
+      id:'cl2', name:'Robert Kim', age:58, experience:'beginner', sessionLength:40, classesPerWeek:1,
+      goals:'General mobility and fall-prevention strength after hip surgery.', repeatClasses:true,
+      conditions:[{id:'c2', name:'Knee osteoarthritis', custom:false},{id:'c3', name:'Hip replacement', custom:false}],
+      symptoms:[],
+      planStartDate: mk(9), planWeeksOverride:{}, planHistory:[],
+      assessment:{
+        goals:{complete:true, fields:[{label:'Primary goal', value:'Fall prevention'},{label:'Secondary goal', value:'General mobility'}]},
+        lifestyle:{complete:true, fields:[{label:'Occupation', value:'Retired'},{label:'Activity level', value:'Sedentary, gardens occasionally'},{label:'Sleep quality', value:'Good'}]},
+        experience:{complete:true, fields:[{label:'Prior Pilates experience', value:'None before this studio'},{label:'Preferred apparatus', value:'Mat, Reformer (seated)'}]},
+        contraindications:{complete:true, fields:[{label:'Known conditions', value:'Hip replacement (2024), knee OA'},{label:'Movements to avoid', value:'Deep hip flexion, cross-body leg work'}]},
+      },
+      recentSessions:[
+        {id:newId(), date:daysAgo(2), summary:'Reformer footwork — safe range', tags:['stability'], sessionId:null},
+      ],
+      legacyInjuryNotes:'',
+    },
+    {
+      id:'cl3', name:'Priya Anand', age:29, experience:'advanced', sessionLength:60, classesPerWeek:3,
+      goals:'Performance conditioning and injury prevention for marathon training.', repeatClasses:false,
+      conditions:[],
+      symptoms:[{id:'s2', date:daysAgo(1), location:'Hip', description:'Sharp pinch during deep hip flexion, only on the right side.'}],
+      planStartDate: mk(2), planWeeksOverride:{}, planHistory:[],
+      assessment:{
+        goals:{complete:false, fields:[{label:'Primary goal', value:'Performance conditioning'},{label:'Secondary goal', value:'Injury prevention'}]},
+        lifestyle:{complete:false, fields:[{label:'Occupation', value:'Marketing manager'},{label:'Activity level', value:'Very active — runs 5x/week'},{label:'Sleep quality', value:'Good'}]},
+        experience:{complete:false, fields:[{label:'Prior Pilates experience', value:'2 years, reformer-focused'},{label:'Preferred apparatus', value:'Reformer, Wunda Chair'}]},
+        contraindications:{complete:false, fields:[{label:'Known conditions', value:'None on file'},{label:'Movements to avoid', value:'TBD — see symptom log'}]},
+      },
+      recentSessions:[
+        {id:newId(), date:daysAgo(0), summary:'Reformer — power & stamina flow', tags:['stamina','strengthen'], sessionId:null},
+      ],
+      legacyInjuryNotes:'',
+    },
+  ];
+}
+
+function loadData(){
+  APPARATUS_LIST = safeParse('sg_apparatus', [...DEFAULT_APPARATUS]);
+  CUSTOM_CONDITIONS = safeParse('sg_custom_conditions', []);
+  classLibrary = safeParse('sg_class_library', []);
+
+  const rawClients = safeParse('sg_clients', []);
+  const version = localStorage.getItem('sg_schema_version');
+
+  if(!rawClients.length){
+    clients = seedDemoClients();
+    sessions = {};
+  } else if(version==='2'){
+    clients = rawClients;
+    sessions = safeParse('sg_sessions', {});
+  } else {
+    const legacyClasses = safeParse('sg_classes', {});
+    clients = rawClients.map(migrateClient);
+    sessions = migrateLegacySessions(legacyClasses, clients);
+  }
+  localStorage.setItem('sg_schema_version','2');
+  persist();
+}
+
+// ============================================================
+// INDEXEDDB — REFERENCE LIBRARY FILE STORAGE
+// ============================================================
+let _refDB = null;
+function openRefDB(){
+  if(_refDB) return Promise.resolve(_refDB);
+  return new Promise((resolve,reject)=>{
+    if(!window.indexedDB){ reject(new Error('IndexedDB unavailable')); return; }
+    const req = indexedDB.open('sg_reference_db', 1);
+    req.onupgradeneeded = ()=>{
+      const db = req.result;
+      if(!db.objectStoreNames.contains('docs')) db.createObjectStore('docs', {keyPath:'id'});
+      if(!db.objectStoreNames.contains('files')) db.createObjectStore('files', {keyPath:'fileKey'});
+    };
+    req.onsuccess = ()=>{ _refDB = req.result; resolve(_refDB); };
+    req.onerror = ()=>reject(req.error);
+  });
+}
+function loadAllDocsFromIDB(){
+  return openRefDB().then(db=>new Promise((resolve,reject)=>{
+    const tx = db.transaction('docs','readonly');
+    const req = tx.objectStore('docs').getAll();
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  })).catch(e=>{ console.warn('[reference-library] IndexedDB unavailable', e); return null; });
+}
+function saveDocToIDB(doc){
+  return openRefDB().then(db=>new Promise((resolve,reject)=>{
+    const tx = db.transaction('docs','readwrite');
+    tx.objectStore('docs').put(doc);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  }));
+}
+function saveBlobToIDB(fileKey, file){
+  return openRefDB().then(db=>new Promise((resolve,reject)=>{
+    const tx = db.transaction('files','readwrite');
+    tx.objectStore('files').put({fileKey, blob:file, mimeType:file.type, uploadedAt:Date.now()});
+    tx.oncomplete = ()=>resolve(fileKey);
+    tx.onerror = ()=>reject(tx.error);
+  }));
+}
+async function initReferenceLibrary(){
+  const existing = await loadAllDocsFromIDB();
+  if(existing===null){ REFERENCE_DOCS = REFERENCE_DOCS_SEED.map(d=>({...d})); return; }
+  if(!existing.length){
+    for(const d of REFERENCE_DOCS_SEED){ await saveDocToIDB(d); }
+    REFERENCE_DOCS = REFERENCE_DOCS_SEED.map(d=>({...d}));
+  } else {
+    REFERENCE_DOCS = existing;
+  }
+}
+
+let _pdfjsLoading = null;
+function loadPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve();
+  if(_pdfjsLoading) return _pdfjsLoading;
+  _pdfjsLoading = new Promise((resolve,reject)=>{
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = ()=>{ window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; resolve(); };
+    s.onerror = ()=>reject(new Error('Failed to load pdf.js'));
+    document.head.appendChild(s);
+  });
+  return _pdfjsLoading;
+}
+async function extractPdfText(file){
+  await loadPdfJs();
+  const buf = await file.arrayBuffer();
+  const pdf = await window.pdfjsLib.getDocument({data:buf}).promise;
+  let text = '';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it=>it.str).join(' ') + '\n\n';
+  }
+  return text.trim();
+}
+
+async function initApp(){
+  loadData();
+  await initReferenceLibrary();
+  boot();
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function isAuthed(){ return sessionStorage.getItem('sg_auth')==='1'; }
+function doLogin(){
+  const v = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  if(v===_pw){
+    sessionStorage.setItem('sg_auth','1');
+    boot();
+  } else {
+    err.textContent='Incorrect password. Please try again.';
+    err.style.display='block';
+    document.getElementById('login-password').value='';
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('sg_auth');
+  document.getElementById('app-shell').classList.remove('on');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-password').value='';
+}
+function boot(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-shell').classList.add('on');
+  renderApp();
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function getClient(id){ return clients.find(c=>c.id===id); }
+function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function initials(name){ return (name||'').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function formatDate(d){ if(!d) return ''; return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function experienceBadge(lvl){
+  const cls={beginner:'badge-beginner',intermediate:'badge-intermediate',advanced:'badge-advanced'}[lvl]||'badge-beginner';
+  return `<span class="badge ${cls}">${lvl||'beginner'}</span>`;
+}
+function diffBadge(d){
+  const cls={beginner:'badge-beginner',intermediate:'badge-intermediate',advanced:'badge-advanced'}[d]||'badge-beginner';
+  return `<span class="badge ${cls}">${d}</span>`;
+}
+function goalChip(key){
+  const g = GOAL_TAGS[key]; if(!g) return '';
+  return `<span class="goal-chip" style="background:${g.bg};color:${g.color}">${g.label}</span>`;
+}
+function showNotif(msg){
+  const n=document.getElementById('notification');
+  n.textContent=msg; n.classList.add('show');
+  clearTimeout(window._notifT);
+  window._notifT = setTimeout(()=>n.classList.remove('show'),2200);
+}
+function allConditionNames(){ return [...CONDITIONS_LIBRARY.map(c=>c.name), ...CUSTOM_CONDITIONS.map(c=>c.name)]; }
+function findConditionInfo(name){ return CONDITIONS_LIBRARY.find(c=>c.name===name) || null; }
+
+// legacy free-text injury matching, kept as a fallback signal alongside structured conditions
+function legacyInjuryTokens(client){
+  if(!client || !client.legacyInjuryNotes) return [];
+  return client.legacyInjuryNotes.toLowerCase().split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean);
+}
+function movHasWarning(mov, client){
+  const injs = legacyInjuryTokens(client);
+  if(!injs.length) return false;
+  const cStr = (mov.contra||[]).join(' ').toLowerCase();
+  return injs.some(inj=>cStr.includes(inj)||inj.split(' ').some(w=>w.length>3&&cStr.includes(w)));
+}
+function movHasStructuredWarning(mov, client){
+  if(!client || !client.conditions || !client.conditions.length || !mov.avoidedByConditions || !mov.avoidedByConditions.length) return false;
+  const names = client.conditions.map(c=>c.name);
+  return mov.avoidedByConditions.some(a=>names.includes(a));
+}
+function movWarning(mov, client){ return movHasStructuredWarning(mov, client) || movHasWarning(mov, client); }
+
+// ============================================================
+// LEGACY GENERATION ENGINE (kept as an in-picker "assist", Decision A)
+// ============================================================
+function diffPool(difficulty){
+  if(difficulty==='beginner') return ['beginner'];
+  if(difficulty==='intermediate') return ['beginner','intermediate'];
+  return ['beginner','intermediate','advanced'];
+}
+function generateClass(client, usedIds=[]){
+  const total = SESSION_MOVEMENTS[client.sessionLength]||13;
+  const key = [13,17,22].reduce((a,b)=>Math.abs(b-total)<Math.abs(a-total)?b:a);
+  const dist = SECTION_DISTRIBUTION[key];
+  const pool = diffPool(client.experience);
+  const result = [];
+  SECTION_ORDER.forEach(section=>{
+    const count = dist[section]||0;
+    let candidates = MOVEMENTS.filter(m=>m.section===section && pool.includes(m.difficulty) && !result.some(r=>r.id===m.id) && !usedIds.includes(m.id));
+    if(!candidates.length) candidates = MOVEMENTS.filter(m=>m.section===section && pool.includes(m.difficulty) && !result.some(r=>r.id===m.id));
+    if(!candidates.length) candidates = MOVEMENTS.filter(m=>m.section===section);
+    result.push(...shuffle(candidates).slice(0,count));
+  });
+  return result;
+}
+function suggestExercisesForStage(apparatus, level, client, excludeIds, count){
+  count = count||5;
+  const pool = LEVEL_TO_DIFFICULTY_POOL[level]||['beginner'];
+  let candidates = MOVEMENTS.filter(m=>m.apparatus===apparatus && pool.includes(m.difficulty) && !excludeIds.includes(m.id));
+  candidates = shuffle(candidates);
+  candidates.sort((a,b)=>(movWarning(a,client)?1:0)-(movWarning(b,client)?1:0));
+  return candidates.slice(0,count);
+}
+function suggestSwapAlternatives(mov, currentExercises, client){
+  const inClass = currentExercises.map(m=>m.id);
+  let candidates = MOVEMENTS.filter(m=>m.id!==mov.id && !inClass.includes(m.id) && m.apparatus===mov.apparatus && m.bodyRegion===mov.bodyRegion);
+  if(candidates.length<3){
+    const more = MOVEMENTS.filter(m=>m.id!==mov.id && !inClass.includes(m.id) && m.apparatus===mov.apparatus && !candidates.some(c=>c.id===m.id));
+    candidates=[...candidates,...more];
+  }
+  return shuffle(candidates).slice(0,3);
+}
+function catalogSearch(list, opts){
+  const q=(opts.search||'').toLowerCase();
+  return list.filter(m=>{
+    if(opts.apparatus && m.apparatus!==opts.apparatus) return false;
+    if(opts.levelPool && !opts.levelPool.includes(m.difficulty)) return false;
+    if(q && !(m.name.toLowerCase().includes(q) || (m.desc||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+// ============================================================
+// APP SHELL
+// ============================================================
+function navTo(view){
+  VIEW = view;
+  if(view==='clients') CLIENT_VIEW='list';
+  renderApp();
+}
+function renderApp(){
+  // Live-filtering search inputs re-render on every keystroke; since rendering rebuilds
+  // innerHTML, the focused element is destroyed each time. Preserve focus + cursor
+  // position across the rebuild by keying inputs with a stable data-focus-key.
+  const active = document.activeElement;
+  const focusKey = active && active.dataset ? active.dataset.focusKey : null;
+  const selStart = focusKey && 'selectionStart' in active ? active.selectionStart : null;
+  const selEnd = focusKey && 'selectionEnd' in active ? active.selectionEnd : null;
+
+  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.toggle('active', l.dataset.view===VIEW));
+  const main = document.getElementById('main');
+  if(VIEW==='clients') main.innerHTML = CLIENT_VIEW==='profile' ? renderClientProfile() : renderClientList();
+  else if(VIEW==='sessionBuilder') main.innerHTML = renderSessionBuilder();
+  else if(VIEW==='classBuilder') main.innerHTML = renderClassBuilder();
+  else if(VIEW==='referenceLibrary') main.innerHTML = renderReferenceLibrary();
+  renderOverlays();
+
+  if(focusKey){
+    const el = document.querySelector('[data-focus-key="'+focusKey+'"]');
+    if(el){
+      el.focus();
+      if(selStart!=null && el.setSelectionRange){ try{ el.setSelectionRange(selStart, selEnd); }catch(e){} }
+    }
+  }
+}
+function renderOverlays(){
+  document.getElementById('modal-root').innerHTML = MODAL ? renderModal() : '';
+  document.getElementById('panel-root').innerHTML = PANEL ? renderPanelRoot() : '';
+}
+function closeModal(){ MODAL=null; renderApp(); }
+function closePanel(){ PANEL=null; renderApp(); }
+function stopProp(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); }
+
+// ============================================================
+// CLIENTS — LIST
+// ============================================================
+function renderClientList(){
+  const empty = !clients.length;
+  return `
+    <div class="page-header">
+      <h2>Clients</h2>
+      <button class="btn btn-sage" onclick="openNewClientModal()">+ Add Client</button>
+    </div>
+    <p class="page-sub">Profiles, conditions, 3-month plans and session history — everything you need before and during a session.</p>
+    ${empty?`<div class="empty-state"><div class="icon">🌿</div><h3>No clients yet</h3><p>Add your first client to get started</p><button class="btn btn-sage" onclick="openNewClientModal()">+ Add Client</button></div>`:`
+    <div class="client-grid">
+      ${clients.map(c=>`
+        <div class="client-card" onclick="openClientProfile('${c.id}')">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div class="avatar-circle" style="background:${AVATAR_COLORS[c.experience]||AVATAR_COLORS.beginner}">${initials(c.name)}</div>
+            <div>
+              <h3 style="font-size:17px;margin-bottom:2px">${esc(c.name)}</h3>
+              <div style="font-size:11.5px;color:var(--text-muted)">${c.age?('Age '+c.age+' · '):''}${c.sessionLength||50} min · ${c.classesPerWeek||2}x/week</div>
+            </div>
+          </div>
+          <div class="client-meta">
+            ${experienceBadge(c.experience)}
+            ${c.conditions&&c.conditions.length?`<span class="badge badge-neutral">${c.conditions.length} condition${c.conditions.length===1?'':'s'}</span>`:''}
+          </div>
+        </div>
+      `).join('')}
+    </div>`}
+  `;
+}
+
+function openNewClientModal(){
+  MODAL = { type:'clientForm', editingId:null, data:{name:'', age:'', experience:'beginner', sessionLength:50, classesPerWeek:2, goals:''} };
+  renderApp();
+}
+function openEditClientModal(id){
+  const c = getClient(id);
+  MODAL = { type:'clientForm', editingId:id, data:{name:c.name, age:c.age||'', experience:c.experience, sessionLength:c.sessionLength, classesPerWeek:c.classesPerWeek, goals:c.goals||''} };
+  renderApp();
+}
+function updateModalField(field, value, transform){
+  if(!MODAL) return;
+  MODAL.data[field] = transform ? transform(value) : value;
+}
+function saveClientFromModal(){
+  const d = MODAL.data;
+  if(!d.name || !d.name.trim()){ showNotif('Name is required'); return; }
+  if(MODAL.editingId){
+    const idx = clients.findIndex(c=>c.id===MODAL.editingId);
+    clients[idx] = {...clients[idx], ...d, age: d.age||null};
+    showNotif('Client updated');
+  } else {
+    const c = {
+      id:newId(), ...d, age: d.age||null,
+      conditions:[], symptoms:[], assessment:newDefaultAssessment(),
+      planStartDate:null, planWeeksOverride:{}, planHistory:[], recentSessions:[], legacyInjuryNotes:'',
+    };
+    clients.push(c);
+    showNotif('Client added');
+  }
+  persist();
+  MODAL = null;
+  renderApp();
+}
+function deleteClient(id){
+  if(!confirm('Delete this client and all their data?')) return;
+  clients = clients.filter(c=>c.id!==id);
+  Object.keys(sessions).forEach(sid=>{ if(sessions[sid].clientId===id) delete sessions[sid]; });
+  persist();
+  CLIENT_VIEW='list';
+  renderApp();
+  showNotif('Client deleted');
+}
+function openClientProfile(id){
+  VIEW = 'clients';
+  SELECTED_CLIENT_ID = id;
+  CLIENT_VIEW = 'profile';
+  PROFILE_TAB = 'overview';
+  HEALTH_STATE = { symptomFormOpen:false, location:SYMPTOM_LOCATIONS[0], description:'' };
+  PLAN_EDITING_WEEK = null;
+  ASSESSMENT_EXPANDED = 'goals';
+  renderApp();
+}
+function backToClientList(){ CLIENT_VIEW='list'; renderApp(); }
+function setProfileTab(tab){ PROFILE_TAB=tab; renderApp(); }
+
+// ============================================================
+// CLIENTS — PROFILE SHELL
+// ============================================================
+function renderClientProfile(){
+  const c = getClient(SELECTED_CLIENT_ID);
+  if(!c) return renderClientList();
+  const tabs = [['overview','Overview'],['health','Health'],['plan','3-Month Plan'],['assessment','Assessment'],['handoff','Handoff']];
+  return `
+    <div class="breadcrumb"><span onclick="backToClientList()">Clients</span> › ${esc(c.name)}</div>
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="avatar-circle lg" style="background:${AVATAR_COLORS[c.experience]||AVATAR_COLORS.beginner}">${initials(c.name)}</div>
+        <div>
+          <h2 style="margin-bottom:2px">${esc(c.name)}</h2>
+          <div style="font-size:12.5px;color:var(--text-muted)">${c.age?('Age '+c.age+' · '):''}${c.sessionLength} min sessions · ${c.classesPerWeek}x per week</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="openEditClientModal('${c.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Delete</button>
+      </div>
+    </div>
+    <div class="profile-tabs">
+      ${tabs.map(([key,label])=>`<button class="profile-tab ${PROFILE_TAB===key?'active':''}" onclick="setProfileTab('${key}')">${label}</button>`).join('')}
+    </div>
+    ${PROFILE_TAB==='overview'?clientRenderOverviewTab(c):''}
+    ${PROFILE_TAB==='health'?clientRenderHealthTab(c):''}
+    ${PROFILE_TAB==='plan'?clientRenderPlanTab(c):''}
+    ${PROFILE_TAB==='assessment'?clientRenderAssessmentTab(c):''}
+    ${PROFILE_TAB==='handoff'?clientRenderHandoffTab(c):''}
+  `;
+}
+
+// ============================================================
+// CLIENTS — OVERVIEW TAB
+// ============================================================
+function clientRenderOverviewTab(c){
+  const wk = getCurrentPlanWeek(c);
+  const planInfo = c.planStartDate ? clientPlanWeek(c, wk) : null;
+  return `
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card-flat">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+            <div class="eyebrow" style="margin-bottom:0">Goals</div>
+            <button class="btn btn-sage btn-xs" onclick="sbStartForClient('${c.id}')">+ New Session</button>
+          </div>
+          <p style="font-size:13.5px;line-height:1.6">${esc(c.goals)||'<span style="color:var(--text-faint)">No goals recorded yet.</span>'}</p>
+        </div>
+        <div class="card-flat">
+          <div class="eyebrow">Recent Sessions</div>
+          ${c.recentSessions&&c.recentSessions.length?`
+            <div style="display:flex;flex-direction:column;gap:10px">
+              ${c.recentSessions.slice(0,5).map(s=>`
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg);border-radius:10px;flex-wrap:wrap;gap:8px">
+                  <div>
+                    <div style="font-size:13px;font-weight:600">${esc(s.summary)}</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${formatDate(s.date)}</div>
+                  </div>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap">${(s.tags||[]).map(t=>goalChip(t)).join('')}</div>
+                </div>
+              `).join('')}
+            </div>`:`<div style="font-size:12.5px;color:var(--text-faint)">No sessions logged yet.</div>`}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card-flat">
+          <div class="eyebrow">Current Plan Focus</div>
+          ${planInfo?`
+            <div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${esc(planInfo.apparatus)}</div>
+            <div style="font-size:13px;margin-bottom:10px">${esc(planInfo.focus)}</div>
+            <div style="font-size:11px;color:var(--text-muted)">Week ${wk} of 12</div>
+          `:`<div style="font-size:12.5px;color:var(--text-faint)">No 3-month plan started yet.</div><button class="btn btn-outline btn-xs" style="margin-top:10px" onclick="setProfileTab('plan')">Start a plan</button>`}
+        </div>
+        <div class="card-flat">
+          <div class="eyebrow">Active Conditions</div>
+          ${c.conditions&&c.conditions.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${c.conditions.map(cd=>`<span class="chip">${esc(cd.name)}</span>`).join('')}</div>`:`<div style="font-size:12.5px;color:var(--text-faint)">None on file</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// CLIENTS — HEALTH TAB (Story 3 conditions + Story 10 symptoms)
+// ============================================================
+function dismissLegacyBanner(clientId){
+  const c = getClient(clientId); c.legacyInjuryNotes=''; persist(); renderApp();
+}
+function clientRenderHealthTab(c){
+  return `
+    ${c.legacyInjuryNotes?`
+      <div class="injury-banner">
+        <div class="icon">⚠️</div>
+        <div style="flex:1">
+          <strong>Legacy injury notes from your previous records</strong>
+          <p>"${esc(c.legacyInjuryNotes)}" — please review and add as structured conditions below.</p>
+        </div>
+        <button class="icon-btn" onclick="dismissLegacyBanner('${c.id}')" title="Dismiss">✕</button>
+      </div>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+      <div class="card-flat">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="font-size:19px;font-weight:600;font-family:'Cormorant Garamond',serif">Conditions</div>
+          <button class="btn btn-outline btn-sm" onclick="openConditionPickerModal('${c.id}')">+ Add condition</button>
+        </div>
+        ${c.conditions&&c.conditions.length?`
+          <div>
+            ${c.conditions.map(cd=>`
+              <div class="list-row" onclick="openConditionPanel('${esc(cd.name).replace(/'/g,"\\'")}')">
+                <div style="display:flex;align-items:center;gap:9px">
+                  <span style="font-size:13px;font-weight:600">${esc(cd.name)}</span>
+                  ${cd.custom?`<span style="font-size:9.5px;letter-spacing:0.4px;text-transform:uppercase;color:var(--text-faint)">custom</span>`:''}
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-size:11px;color:var(--sage-dark)">View reference →</span>
+                  <button class="icon-btn" title="Remove" onclick="event.stopPropagation();removeConditionFromClient('${c.id}','${cd.id}')">✕</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>`:`<div class="empty-state-sm"><div>No conditions tagged yet</div><div>Add one to keep reference notes handy during planning</div></div>`}
+      </div>
+      <div class="card-flat">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="font-size:19px;font-weight:600;font-family:'Cormorant Garamond',serif">Symptom Log</div>
+          <button class="btn btn-outline btn-sm" onclick="toggleSymptomForm()">+ Log observation</button>
+        </div>
+        ${HEALTH_STATE.symptomFormOpen?`
+          <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Location</label>
+              <select onchange="HEALTH_STATE.location=this.value">
+                ${SYMPTOM_LOCATIONS.map(l=>`<option value="${l}" ${HEALTH_STATE.location===l?'selected':''}>${l}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>What did you notice?</label>
+              <input type="text" id="symptom-desc" value="${esc(HEALTH_STATE.description)}" placeholder="e.g. sharp pinch at end range…" oninput="HEALTH_STATE.description=this.value">
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn btn-outline btn-sm" onclick="toggleSymptomForm()">Cancel</button>
+              <button class="btn btn-sage btn-sm" onclick="saveSymptom('${c.id}')">Save</button>
+            </div>
+          </div>`:''}
+        ${c.symptoms&&c.symptoms.length?`
+          <div>
+            ${c.symptoms.map(sym=>`
+              <div class="list-row" style="display:block" onclick="openSymptomPanel('${sym.id}')">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">${esc(sym.location)}</span>
+                  <span style="font-size:10.5px;color:var(--text-faint)">${formatDate(sym.date)}</span>
+                </div>
+                <div style="font-size:12px;color:var(--text)">${esc(sym.description)}</div>
+                <div style="font-size:11px;color:var(--sage-dark);margin-top:6px">View related patterns →</div>
+              </div>
+            `).join('')}
+          </div>`:`<div class="empty-state-sm"><div>No observations logged yet</div></div>`}
+      </div>
+    </div>
+  `;
+}
+function toggleSymptomForm(){ HEALTH_STATE.symptomFormOpen = !HEALTH_STATE.symptomFormOpen; HEALTH_STATE.description=''; renderApp(); }
+function saveSymptom(clientId){
+  if(!HEALTH_STATE.description.trim()){ showNotif('Add a description first'); return; }
+  const c = getClient(clientId);
+  c.symptoms.push({ id:newId(), date:new Date().toISOString().slice(0,10), location:HEALTH_STATE.location, description:HEALTH_STATE.description.trim() });
+  persist();
+  HEALTH_STATE = { symptomFormOpen:false, location:SYMPTOM_LOCATIONS[0], description:'' };
+  showNotif('Observation logged');
+  renderApp();
+}
+function openConditionPickerModal(clientId){
+  MODAL = { type:'conditionPicker', clientId, search:'', customValue:'' };
+  renderApp();
+}
+function addConditionToClient(clientId, name, custom){
+  const c = getClient(clientId);
+  if(c.conditions.some(cd=>cd.name===name)) { MODAL=null; renderApp(); return; }
+  c.conditions.push({ id:newId(), name, custom:!!custom });
+  if(custom && !CUSTOM_CONDITIONS.some(cc=>cc.name===name)){ CUSTOM_CONDITIONS.push({name}); }
+  persist();
+  MODAL = null;
+  showNotif('Condition added');
+  renderApp();
+}
+function removeConditionFromClient(clientId, condId){
+  const c = getClient(clientId);
+  c.conditions = c.conditions.filter(cd=>cd.id!==condId);
+  persist();
+  renderApp();
+}
+function openConditionPanel(name){ PANEL = {type:'condition', name}; renderApp(); }
+function openSymptomPanel(symId){
+  const c = getClient(SELECTED_CLIENT_ID);
+  const sym = c.symptoms.find(s=>s.id===symId);
+  if(!sym) return;
+  PANEL = {type:'symptom', location:sym.location, description:sym.description, date:sym.date};
+  renderApp();
+}
+
+// ============================================================
+// CLIENTS — 3-MONTH PLAN TAB (Story 4)
+// ============================================================
+function getCurrentPlanWeek(c){
+  if(!c.planStartDate) return 1;
+  const weeksSince = Math.floor((Date.now()-new Date(c.planStartDate).getTime())/(7*864e5));
+  return Math.min(Math.max(weeksSince+1,1),12);
+}
+function clientPlanWeek(c, n){
+  const override = c.planWeeksOverride && c.planWeeksOverride[n];
+  const tpl = PLAN_TEMPLATE[Math.min(Math.max(n,1),12)-1];
+  return { apparatus: override?override.apparatus:tpl.apparatus, focus: override?override.focus:tpl.focus };
+}
+function clientStartPlan(clientId){
+  const c = getClient(clientId);
+  c.planStartDate = new Date().toISOString().slice(0,10);
+  c.planWeeksOverride = {};
+  persist();
+  showNotif('3-month plan started');
+  renderApp();
+}
+function clientExtendPlan(clientId){
+  const c = getClient(clientId);
+  const lastFocus = clientPlanWeek(c,12).focus;
+  c.planHistory.push({ startDate:c.planStartDate, endDate:new Date().toISOString().slice(0,10), weeksOverride:c.planWeeksOverride });
+  c.planStartDate = new Date().toISOString().slice(0,10);
+  c.planWeeksOverride = { 1: {apparatus:PLAN_TEMPLATE[0].apparatus, focus:lastFocus} };
+  persist();
+  showNotif('Plan extended by 12 weeks');
+  renderApp();
+}
+function startEditWeek(n){
+  const c = getClient(SELECTED_CLIENT_ID);
+  const wk = clientPlanWeek(c,n);
+  PLAN_EDITING_WEEK = n;
+  PLAN_EDIT_DRAFT = {apparatus:wk.apparatus, focus:wk.focus};
+  renderApp();
+}
+function cancelEditWeek(){ PLAN_EDITING_WEEK=null; renderApp(); }
+function saveEditWeek(n){
+  const c = getClient(SELECTED_CLIENT_ID);
+  c.planWeeksOverride[n] = {...PLAN_EDIT_DRAFT};
+  persist();
+  PLAN_EDITING_WEEK = null;
+  showNotif('Week '+n+' updated');
+  renderApp();
+}
+function sbStartFromPlan(clientId, weekNumber){
+  const c = getClient(clientId);
+  const wk = clientPlanWeek(c, weekNumber);
+  sbReset(clientId, {apparatus:wk.apparatus, focus:wk.focus, weekNumber});
+  VIEW = 'sessionBuilder';
+  renderApp();
+}
+function clientRenderPlanTab(c){
+  if(!c.planStartDate){
+    return `<div class="empty-state"><div class="icon">🗓️</div><h3>No 3-month plan yet</h3><p>Start a rolling 12-week apparatus plan for ${esc(c.name)}</p><button class="btn btn-sage" onclick="clientStartPlan('${c.id}')">Start 3-Month Plan</button></div>`;
+  }
+  const current = getCurrentPlanWeek(c);
+  const endingSoon = current>=10;
+  let rows='';
+  for(let n=1;n<=12;n++){
+    const wk = clientPlanWeek(c,n);
+    const status = n<current?'done':n===current?'current':'upcoming';
+    if(PLAN_EDITING_WEEK===n){
+      rows += `
+        <div class="plan-week-edit">
+          <div style="font-size:11.5px;color:var(--text-muted)">Editing Week ${n}</div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Apparatus</label>
+              <select onchange="PLAN_EDIT_DRAFT.apparatus=this.value">
+                ${APPARATUS_LIST.map(a=>`<option value="${a}" ${PLAN_EDIT_DRAFT.apparatus===a?'selected':''}>${a}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Focus</label>
+              <input type="text" value="${esc(PLAN_EDIT_DRAFT.focus)}" oninput="PLAN_EDIT_DRAFT.focus=this.value">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-outline btn-sm" onclick="cancelEditWeek()">Cancel</button>
+            <button class="btn btn-sage btn-sm" onclick="saveEditWeek(${n})">Save</button>
+          </div>
+        </div>`;
+    } else {
+      rows += `
+        <div class="plan-week-row ${status}" onclick="startEditWeek(${n})">
+          <div class="plan-week-num">W${n}</div>
+          <div style="flex:1 1 200px;min-width:160px">
+            <div style="font-size:13.5px;font-weight:600">${esc(wk.apparatus)}</div>
+            <div style="font-size:11px;color:var(--text-muted)">${esc(wk.focus)}</div>
+          </div>
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:10px">
+            ${status==='done'?`<span style="font-size:11px;color:var(--sage-dark);font-weight:600">Done</span>`:''}
+            ${status==='current'?`<span style="font-size:11px;color:var(--sage-dark);font-weight:600">Current</span><button class="btn btn-outline btn-xs" onclick="event.stopPropagation();sbStartFromPlan('${c.id}',${n})">Build session from this week →</button>`:''}
+          </div>
+        </div>`;
+    }
+  }
+  return `
+    ${endingSoon?`
+      <div class="plan-banner">
+        <div style="font-size:13px"><strong>This plan wraps up in ${12-current} week${12-current===1?'':'s'}.</strong> <span style="color:var(--text-muted)">Extend it or start a new cycle when ready.</span></div>
+        <button class="btn btn-sage btn-sm" onclick="clientExtendPlan('${c.id}')">Extend Plan</button>
+      </div>`:''}
+    <div>${rows}</div>
+  `;
+}
+
+// ============================================================
+// CLIENTS — ASSESSMENT TAB (Story 7)
+// ============================================================
+function toggleAssessmentSection(key){ ASSESSMENT_EXPANDED = ASSESSMENT_EXPANDED===key ? null : key; renderApp(); }
+function toggleAssessmentComplete(clientId, key){
+  const c = getClient(clientId);
+  c.assessment[key].complete = !c.assessment[key].complete;
+  persist();
+  renderApp();
+}
+function saveAssessmentLater(){ showNotif('Progress saved'); }
+function clientRenderAssessmentTab(c){
+  const keys = ['goals','lifestyle','experience','contraindications'];
+  const labels = {goals:'Goals', lifestyle:'Lifestyle', experience:'Pilates Experience', contraindications:'Contraindications'};
+  const completedCount = keys.filter(k=>c.assessment[k].complete).length;
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13px;font-weight:500">${completedCount} of 4 sections complete</div>
+      <button class="btn btn-outline btn-sm" onclick="saveAssessmentLater()">Save &amp; continue later</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${Math.round(completedCount/4*100)}%"></div></div>
+    ${keys.map(k=>{
+      const sec = c.assessment[k];
+      const expanded = ASSESSMENT_EXPANDED===k;
+      return `
+        <div class="collapse-card">
+          <div class="collapse-header" onclick="toggleAssessmentSection('${k}')">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif">${labels[k]}</span>
+              <span class="badge" style="background:${sec.complete?'#e8f4ea':'#fdf0eb'};color:${sec.complete?'#3d7a47':'#d97054'}">${sec.complete?'Complete':'In progress'}</span>
+            </div>
+            <span style="color:var(--text-muted)">${expanded?'▲':'▼'}</span>
+          </div>
+          ${expanded?`
+            <div class="collapse-body">
+              <div class="field-grid">
+                ${sec.fields.map(f=>`<div><div class="field-label">${esc(f.label)}</div><div style="font-size:13px">${esc(f.value)}</div></div>`).join('')}
+              </div>
+              <label style="display:flex;align-items:center;gap:9px;cursor:pointer;width:fit-content">
+                <div class="toggle"><input type="checkbox" ${sec.complete?'checked':''} onchange="toggleAssessmentComplete('${c.id}','${k}')"><span class="toggle-slider"></span></div>
+                <span style="font-size:12.5px">Mark section complete</span>
+              </label>
+            </div>`:''}
+        </div>`;
+    }).join('')}
+  `;
+}
+
+// ============================================================
+// CLIENTS — HANDOFF TAB (Story 8)
+// ============================================================
+function conditionsSummary(c){ return c.conditions&&c.conditions.length ? c.conditions.map(cd=>cd.name).join(', ') : 'None on file'; }
+function clientRenderHandoffTab(c){
+  const wk = getCurrentPlanWeek(c);
+  const planInfo = c.planStartDate ? clientPlanWeek(c,wk) : null;
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="card-flat">
+        <div class="eyebrow">At a glance</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div><div class="field-label">Goals</div><div style="font-size:13px">${esc(c.goals)||'—'}</div></div>
+          <div><div class="field-label">Conditions</div><div style="font-size:13px">${esc(conditionsSummary(c))}</div></div>
+          <div><div class="field-label">Current plan focus</div><div style="font-size:13px">${planInfo?esc(planInfo.apparatus)+' — '+esc(planInfo.focus):'No active plan'}</div></div>
+        </div>
+      </div>
+      <div class="card-flat" style="display:flex;flex-direction:column;align-items:flex-start;gap:14px">
+        <div class="eyebrow" style="margin-bottom:0">Substitute handoff</div>
+        <p style="font-size:13px;color:var(--text);line-height:1.6">Generate a simplified, safety-first view for a substitute instructor — no editing controls, no working notes.</p>
+        <button class="btn btn-sage" onclick="openHandoffModal('${c.id}')">Generate Handoff Summary</button>
+      </div>
+    </div>
+  `;
+}
+function openHandoffModal(clientId){ MODAL = {type:'handoff', clientId}; renderApp(); }
+function copyHandoffLink(){
+  const url = location.href.split('#')[0] + '#client-' + SELECTED_CLIENT_ID;
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).catch(()=>{}); }
+  showNotif('Link copied to clipboard');
+}
+
+// ============================================================
+// SESSION BUILDER (Story 1 ABC/Free-form, Story 5 warm-up, Story 10 goal tags)
+// ============================================================
+function sbNewStage(){ return {apparatus:null, level:'Beginner', exercises:[], pickerOpen:false, pickerSource:'catalog', pickerSearch:'', swapIdx:null, swapMode:null}; }
+function sbNewBlock(){ return {id:newId(), apparatus:null, level:'Beginner', exercises:[], pickerOpen:false, pickerSource:'catalog', pickerSearch:'', swapIdx:null, swapMode:null}; }
+function sbReset(clientId, prefill){
+  SB = {
+    clientId, screen:'selector', warmupEnabled:false, warmupExercises:[],
+    goalTags:{strengthen:false,stretch:false,stamina:false,stability:false},
+    abcStageIdx:0, abcStages:[sbNewStage(),sbNewStage(),sbNewStage()],
+    freeformBlocks:[sbNewBlock()],
+    lastFormat:'abc', prefill: prefill||null,
+  };
+  if(prefill){ SB.abcStages[0].apparatus = prefill.apparatus; SB.freeformBlocks[0].apparatus = prefill.apparatus; }
+}
+function sbStartForClient(clientId){ sbReset(clientId, null); VIEW='sessionBuilder'; renderApp(); }
+
+function renderSessionBuilder(){
+  if(!SB || !SB.clientId) return renderSessionBuilderClientPicker();
+  const client = getClient(SB.clientId);
+  if(!client){ SB=null; return renderSessionBuilderClientPicker(); }
+  let body;
+  if(SB.screen==='selector') body = sbRenderSelector();
+  else if(SB.screen==='abc') body = sbRenderAbc(client);
+  else if(SB.screen==='freeform') body = sbRenderFreeform(client);
+  else body = sbRenderSummary();
+  return `
+    <div class="breadcrumb"><span onclick="backToClientList()">Clients</span> › <span onclick="openClientProfile('${client.id}')">${esc(client.name)}</span> › Session Builder</div>
+    <div class="page-header"><h2>Build a Session — ${esc(client.name)}</h2></div>
+    ${SB.screen!=='summary'?sbRenderHeaderBar():''}
+    ${body}
+  `;
+}
+function renderSessionBuilderClientPicker(){
+  return `
+    <div class="page-header"><h2>Session Builder</h2></div>
+    <p class="page-sub">Choose a client to build a session for.</p>
+    ${clients.length?`<div class="client-grid">
+      ${clients.map(c=>`
+        <div class="client-card" onclick="sbStartForClient('${c.id}')">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="avatar-circle" style="background:${AVATAR_COLORS[c.experience]||AVATAR_COLORS.beginner}">${initials(c.name)}</div>
+            <div><h3 style="font-size:16px;margin-bottom:4px">${esc(c.name)}</h3>${experienceBadge(c.experience)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`:`<div class="empty-state"><div class="icon">👥</div><h3>No clients yet</h3><p>Add a client first from the Clients tab.</p></div>`}
+  `;
+}
+function sbRenderHeaderBar(){
+  return `
+    <div class="sb-header-bar">
+      <div style="flex:1;min-width:220px">
+        <div class="toggle-row" style="background:transparent;border:none;padding:0">
+          <span class="toggle-label" style="font-weight:600">Include mobility warm-up</span>
+          <div class="toggle"><input type="checkbox" ${SB.warmupEnabled?'checked':''} onchange="sbToggleWarmup()"><span class="toggle-slider"></span></div>
+        </div>
+        ${SB.warmupEnabled?`
+          <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            ${SB.warmupExercises.map((w,i)=>`<span class="chip-removable">${esc(w)}<button onclick="sbRemoveWarmup(${i})">✕</button></span>`).join('')}
+            ${SB.warmupExercises.length<WARMUP_POOL.length?`<button class="btn btn-outline btn-xs" onclick="sbAddWarmup()">+ Add movement</button>`:''}
+          </div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="eyebrow" style="margin-bottom:0">Session Goals</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${Object.keys(GOAL_TAGS).map(k=>`<button class="goal-toggle ${SB.goalTags[k]?'active '+k:''}" onclick="sbToggleGoal('${k}')">${GOAL_TAGS[k].label}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function sbToggleWarmup(){ SB.warmupEnabled=!SB.warmupEnabled; renderApp(); }
+function sbAddWarmup(){ const next=WARMUP_POOL.find(w=>!SB.warmupExercises.includes(w)); if(next) SB.warmupExercises.push(next); renderApp(); }
+function sbRemoveWarmup(i){ SB.warmupExercises.splice(i,1); renderApp(); }
+function sbToggleGoal(k){ SB.goalTags[k]=!SB.goalTags[k]; renderApp(); }
+
+function sbRenderSelector(){
+  return `
+    <div class="format-grid">
+      <div class="format-card" onclick="sbChooseAbc()">
+        <h3>ABC Format</h3>
+        <p>A guided 3-stage flow: assessment apparatus → diagnostic apparatus → targeted exercises. Best for beginner/beginner-intermediate clients.</p>
+      </div>
+      <div class="format-card" onclick="sbChooseFreeform()">
+        <h3>Free-Form Format</h3>
+        <p>Build from any combination of apparatus, in any order. Best for intermediate/advanced clients.</p>
+      </div>
+    </div>
+    ${SB.prefill?`<div class="plan-banner" style="margin-top:20px"><div style="font-size:13px"><strong>Suggested from Week ${SB.prefill.weekNumber} of the 3-month plan:</strong> <span style="color:var(--text-muted)">${esc(SB.prefill.apparatus)} — ${esc(SB.prefill.focus)}</span></div></div>`:''}
+  `;
+}
+function sbChooseAbc(){ SB.screen='abc'; SB.abcStageIdx=0; SB.lastFormat='abc'; renderApp(); }
+function sbChooseFreeform(){ SB.screen='freeform'; SB.lastFormat='freeform'; renderApp(); }
+
+function sbRenderAbc(client){
+  const idx = SB.abcStageIdx;
+  const labels=['A','B','C'];
+  let stepper = '<div class="stepper">';
+  for(let i=0;i<3;i++){
+    stepper += `<div class="step-circle ${i<idx?'done':i===idx?'active':''}">${i<idx?'✓':labels[i]}</div>`;
+    if(i<2) stepper += `<div class="step-line ${i<idx?'done':''}"></div>`;
+  }
+  stepper += '</div>';
+  return `
+    ${stepper}
+    ${sbRenderStageOrBlock(SB.abcStages[idx], 'abc', idx, client, false)}
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn btn-outline" onclick="sbPrevStage()" ${idx===0?'disabled':''}>Back</button>
+      <button class="btn btn-sage" onclick="sbNextStage()">${idx===2?'Finish → Session Summary':'Next'}</button>
+    </div>
+  `;
+}
+function sbPrevStage(){ if(SB.abcStageIdx>0) SB.abcStageIdx--; renderApp(); }
+function sbNextStage(){ if(SB.abcStageIdx<2) SB.abcStageIdx++; else { sbFinishSession(); return; } renderApp(); }
+
+function sbRenderFreeform(client){
+  return `
+    ${SB.freeformBlocks.map((b,i)=>sbRenderStageOrBlock(b,'freeform',i,client,true)).join('')}
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn btn-outline" onclick="sbAddBlock()">+ Add apparatus block</button>
+      <button class="btn btn-sage" onclick="sbFinishSession()">Finish → Session Summary</button>
+    </div>
+  `;
+}
+function sbAddBlock(){ SB.freeformBlocks.push(sbNewBlock()); renderApp(); }
+function sbRemoveBlock(idx){ SB.freeformBlocks.splice(idx,1); renderApp(); }
+function sbMoveBlock(idx,dir){ const arr=SB.freeformBlocks; const j=idx+dir; if(j<0||j>=arr.length) return; [arr[idx],arr[j]]=[arr[j],arr[idx]]; renderApp(); }
+
+function sbGetEntity(targetType, idx){ return targetType==='abc' ? SB.abcStages[idx] : SB.freeformBlocks[idx]; }
+
+function sbRenderStageOrBlock(entity, targetType, idx, client, isBlock){
+  const label = targetType==='abc' ? ('Stage '+['A','B','C'][idx]) : ('Block '+(idx+1));
+  const levelPool = LEVEL_TO_DIFFICULTY_POOL[entity.level]||['beginner'];
+  const showPrefillHint = SB.prefill && idx===0 && entity.apparatus===SB.prefill.apparatus;
+  return `
+    <div class="stage-block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div style="font-size:17px;font-weight:600;font-family:'Cormorant Garamond',serif">${label}</div>
+        ${isBlock?`
+          <div style="display:flex;gap:4px">
+            <button class="icon-btn" onclick="sbMoveBlock(${idx},-1)" title="Move up">↑</button>
+            <button class="icon-btn" onclick="sbMoveBlock(${idx},1)" title="Move down">↓</button>
+            <button class="icon-btn delete" onclick="sbRemoveBlock(${idx})" title="Remove block">✕</button>
+          </div>`:''}
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Apparatus</label>
+          <button class="btn btn-outline" style="width:100%;text-align:left" onclick="sbOpenApparatusPicker('${targetType}',${idx})">${entity.apparatus?esc(entity.apparatus):'Choose apparatus…'}</button>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Level</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${LEVELS.map(l=>`<button class="level-pill ${entity.level===l?'active':''}" onclick="sbSetLevel('${targetType}',${idx},'${l}')">${l}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+      ${showPrefillHint?`<div style="font-size:11.5px;color:var(--sage-dark);margin:-4px 0 10px">Suggested focus: ${esc(SB.prefill.focus)} — from Week ${SB.prefill.weekNumber} plan</div>`:''}
+      <div style="margin-top:14px">
+        ${entity.exercises.length?entity.exercises.map((ex,exIdx)=>sbRenderExerciseRow(ex,targetType,idx,exIdx,client)).join(''):`<div style="font-size:12.5px;color:var(--text-faint);margin-bottom:8px">No exercises added yet.</div>`}
+      </div>
+      ${entity.apparatus?(entity.pickerOpen?sbRenderPicker(entity,targetType,idx,client):`<button class="btn btn-outline btn-sm" onclick="sbTogglePicker('${targetType}',${idx})">+ Add exercise</button>`):`<div style="font-size:12px;color:var(--text-faint)">Choose an apparatus first to see exercises.</div>`}
+    </div>
+  `;
+}
+
+function sbRenderExerciseRow(ex, targetType, idx, exIdx, client){
+  const warn = movWarning(ex, client);
+  const entity = sbGetEntity(targetType, idx);
+  const swapping = entity.swapIdx===exIdx;
+  let html = `
+    <div class="exercise-row ${warn?'has-warning':''}">
+      <div style="flex:1;min-width:120px">
+        <div style="font-weight:500;font-size:13px">${esc(ex.name)}</div>
+        ${ex.sourceRef?`<span class="chip-source" onclick="refOpenFromChip('${ex.sourceRef.docId}',${ex.sourceRef.sectionIndex})">📖 source</span>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        ${warn?`<span class="warning-tag">⚠ check condition</span>`:''}
+        <button class="icon-btn" title="Swap" onclick="sbToggleSwap('${targetType}',${idx},${exIdx})">⇄</button>
+        <button class="icon-btn delete" title="Remove" onclick="sbRemoveExercise('${targetType}',${idx},${exIdx})">✕</button>
+      </div>
+    </div>
+  `;
+  if(swapping) html += sbRenderSwapPanel(entity, targetType, idx, exIdx, client, ex);
+  return html;
+}
+function sbToggleSwap(targetType, idx, exIdx){
+  const entity = sbGetEntity(targetType, idx);
+  entity.swapIdx = entity.swapIdx===exIdx ? null : exIdx;
+  entity.swapMode = null;
+  renderApp();
+}
+function sbSetSwapMode(targetType, idx, mode){ sbGetEntity(targetType,idx).swapMode=mode; renderApp(); }
+function sbRenderSwapPanel(entity, targetType, idx, exIdx, client, ex){
+  if(!entity.swapMode){
+    return `
+      <div class="inline-picker">
+        <div style="font-size:12px;margin-bottom:8px">Swap "${esc(ex.name)}" for:</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="sbSetSwapMode('${targetType}',${idx},'suggest')">Suggested alternatives</button>
+          <button class="btn btn-outline btn-sm" onclick="sbSetSwapMode('${targetType}',${idx},'library')">Browse catalog</button>
+          <button class="btn btn-outline btn-sm" onclick="sbToggleSwap('${targetType}',${idx},${exIdx})">Cancel</button>
+        </div>
+      </div>`;
+  }
+  let candidates;
+  if(entity.swapMode==='suggest') candidates = suggestSwapAlternatives(ex, entity.exercises, client);
+  else candidates = catalogSearch(MOVEMENTS, {apparatus:entity.apparatus}).filter(m=>m.id!==ex.id && !entity.exercises.some(e2=>e2.id===m.id)).slice(0,30);
+  return `
+    <div class="inline-picker">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:12px">${entity.swapMode==='suggest'?'Suggested alternatives':'Browse catalog'}</div>
+        <button class="icon-btn" onclick="sbToggleSwap('${targetType}',${idx},${exIdx})">✕</button>
+      </div>
+      ${candidates.length?candidates.map(m=>`<div class="pick-row" onclick="sbConfirmSwap('${targetType}',${idx},${exIdx},'${m.id}')">${esc(m.name)} <span style="color:var(--text-muted);font-size:11px">— ${esc(m.apparatus)}, ${m.difficulty}</span></div>`).join(''):`<div style="font-size:12px;color:var(--text-faint)">No alternatives found.</div>`}
+    </div>
+  `;
+}
+function sbConfirmSwap(targetType, idx, exIdx, movId){
+  const mov = MOVEMENTS.find(m=>m.id===movId);
+  const entity = sbGetEntity(targetType, idx);
+  entity.exercises[exIdx] = {...mov};
+  entity.swapIdx = null; entity.swapMode=null;
+  showNotif('Exercise swapped');
+  renderApp();
+}
+function sbRemoveExercise(targetType, idx, exIdx){ sbGetEntity(targetType, idx).exercises.splice(exIdx,1); renderApp(); }
+
+function sbTogglePicker(targetType, idx){
+  const e = sbGetEntity(targetType, idx);
+  e.pickerOpen = !e.pickerOpen;
+  e.pickerSearch='';
+  renderApp();
+}
+function sbSetPickerSource(targetType, idx, source){ sbGetEntity(targetType,idx).pickerSource=source; renderApp(); }
+function sbSetPickerSearch(targetType, idx, val){ sbGetEntity(targetType,idx).pickerSearch=val; renderApp(); }
+function sbRenderPicker(entity, targetType, idx, client){
+  const levelPool = LEVEL_TO_DIFFICULTY_POOL[entity.level]||['beginner'];
+  const excludeIds = entity.exercises.map(e=>e.id);
+  return `
+    <div class="inline-picker">
+      <div class="picker-tabs">
+        <button class="picker-tab ${entity.pickerSource==='catalog'?'active':''}" onclick="sbSetPickerSource('${targetType}',${idx},'catalog')">Catalog</button>
+        <button class="picker-tab ${entity.pickerSource==='reference'?'active':''}" onclick="sbSetPickerSource('${targetType}',${idx},'reference')">From Reference Library</button>
+        <span style="flex:1"></span>
+        <button class="icon-btn" onclick="sbTogglePicker('${targetType}',${idx})">✕</button>
+      </div>
+      ${entity.pickerSource==='catalog'?`
+        <div class="library-filters">
+          <input type="text" data-focus-key="sb-picker-${targetType}-${idx}" placeholder="Search ${esc(entity.apparatus)} exercises…" value="${esc(entity.pickerSearch)}" oninput="sbSetPickerSearch('${targetType}',${idx},this.value)">
+          <button class="btn btn-outline btn-sm" onclick="sbQuickSuggest('${targetType}',${idx})">✨ Suggest exercises</button>
+        </div>
+        <div style="max-height:260px;overflow-y:auto">
+          ${(catalogSearch(MOVEMENTS,{apparatus:entity.apparatus, levelPool, search:entity.pickerSearch}).filter(m=>!excludeIds.includes(m.id)).slice(0,40).map(m=>`
+            <div class="pick-row" onclick="sbAddExercise('${targetType}',${idx},'${m.id}')">${esc(m.name)} <span style="color:var(--text-muted);font-size:11px">— ${m.difficulty}${movWarning(m,client)?' · ⚠':''}</span></div>`).join('')) || `<div style="font-size:12px;color:var(--text-faint)">No matches for this apparatus/level.</div>`}
+        </div>
+      `:sbRenderReferencePickerTab(entity, targetType, idx)}
+    </div>
+  `;
+}
+function sbQuickSuggest(targetType, idx){
+  const entity = sbGetEntity(targetType, idx);
+  const client = getClient(SB.clientId);
+  const excludeIds = entity.exercises.map(e=>e.id);
+  const picks = suggestExercisesForStage(entity.apparatus, entity.level, client, excludeIds, 4);
+  entity.exercises.push(...picks.map(m=>({...m})));
+  entity.pickerOpen = false;
+  showNotif(picks.length+' exercise'+(picks.length===1?'':'s')+' suggested');
+  renderApp();
+}
+function sbAddExercise(targetType, idx, movId){
+  const mov = MOVEMENTS.find(m=>m.id===movId);
+  sbGetEntity(targetType, idx).exercises.push({...mov});
+  renderApp();
+}
+
+function sbRenderReferencePickerTab(entity, targetType, idx){
+  const q = (entity.pickerSearch||'').toLowerCase();
+  const matches = REFERENCE_DOCS.map(d=>{
+    const secs = d.sections.map((s,si)=>({...s,si})).filter(s=> !q || s.heading.toLowerCase().includes(q) || s.content.toLowerCase().includes(q) || d.title.toLowerCase().includes(q));
+    return {doc:d, secs};
+  }).filter(x=>x.secs.length);
+  return `
+    <div class="library-filters">
+      <input type="text" data-focus-key="sb-picker-${targetType}-${idx}" placeholder="Search reference library…" value="${esc(entity.pickerSearch)}" oninput="sbSetPickerSearch('${targetType}',${idx},this.value)">
+    </div>
+    <div style="max-height:260px;overflow-y:auto">
+      ${matches.length?matches.map(({doc,secs})=>`
+        <div style="margin-bottom:10px">
+          <div style="font-size:11.5px;font-weight:600;color:var(--text-muted);margin-bottom:4px">${esc(doc.title)}</div>
+          ${secs.map(s=>`
+            <div class="pick-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+              <div><div style="font-weight:600;font-size:12.5px">${esc(s.heading)}</div><div style="font-size:11.5px;color:var(--text-muted)">${esc(s.content.slice(0,90))}…</div></div>
+              <button class="btn btn-outline btn-xs" onclick="sbAddFromReference('${targetType}',${idx},'${doc.id}',${s.si})">+ Add</button>
+            </div>`).join('')}
+        </div>
+      `).join(''):`<div style="font-size:12px;color:var(--text-faint)">No reference matches. Try a different search term.</div>`}
+    </div>
+  `;
+}
+function findCatalogMatchFromText(text){
+  const lower = text.toLowerCase();
+  return MOVEMENTS.find(m=>lower.includes(m.name.toLowerCase()));
+}
+function sbAddFromReference(targetType, idx, docId, sectionIndex){
+  const doc = REFERENCE_DOCS.find(d=>d.id===docId);
+  const section = doc.sections[sectionIndex];
+  const entity = sbGetEntity(targetType, idx);
+  const match = findCatalogMatchFromText(section.heading+' '+section.content);
+  const sourceRef = {docId, sectionIndex};
+  if(match) entity.exercises.push({...match, sourceRef});
+  else entity.exercises.push({ id:newId(), name:section.heading, apparatus:entity.apparatus, difficulty:'beginner', section:'warm-up', bodyRegion:'full body', contra:[], avoidedByConditions:[], isCustomFromReference:true, sourceRef });
+  entity.pickerOpen = false;
+  showNotif('Added from reference library');
+  renderApp();
+}
+function refOpenFromChip(docId, sectionIndex){
+  VIEW='referenceLibrary';
+  REF.screen='viewer'; REF.activeDocId=docId; REF.activeSectionIndex=sectionIndex;
+  renderApp();
+}
+
+function sbOpenApparatusPicker(targetType, idx){ MODAL={type:'apparatusPicker', targetType, targetIndex:idx, search:''}; renderApp(); }
+function sbSelectApparatus(name){
+  sbGetEntity(MODAL.targetType, MODAL.targetIndex).apparatus = name;
+  MODAL = null;
+  renderApp();
+}
+function sbSetLevel(targetType, idx, level){ sbGetEntity(targetType,idx).level = level; renderApp(); }
+function openManageApparatusModal(){ MODAL = {type:'manageApparatus', newName:''}; renderApp(); }
+function addApparatus(){
+  const name = (MODAL.newName||'').trim();
+  if(!name) return;
+  if(APPARATUS_LIST.includes(name)){ showNotif('Already in the list'); return; }
+  APPARATUS_LIST.push(name);
+  persist();
+  MODAL.newName='';
+  renderApp();
+}
+
+function sbFinishSession(){ SB.screen='summary'; renderApp(); }
+function sbEditSession(){ SB.screen = SB.lastFormat; renderApp(); }
+function sbRenderSummary(){
+  const goalKeys = Object.keys(SB.goalTags).filter(k=>SB.goalTags[k]);
+  const units = SB.lastFormat==='abc' ? SB.abcStages.map((s,i)=>({label:'Stage '+['A','B','C'][i], ...s})) : SB.freeformBlocks.map((b,i)=>({label:'Block '+(i+1), ...b}));
+  return `
+    ${SB.warmupEnabled && SB.warmupExercises.length?`
+      <div class="summary-block">
+        <div class="eyebrow">Warm-Up</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${SB.warmupExercises.map(w=>`<span class="chip">${esc(w)}</span>`).join('')}</div>
+      </div>`:''}
+    ${goalKeys.length?`<div style="margin-bottom:14px;display:flex;gap:6px;flex-wrap:wrap">${goalKeys.map(k=>goalChip(k)).join('')}</div>`:''}
+    ${units.map(u=>`
+      <div class="summary-block">
+        <div style="font-size:16px;font-weight:600;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${u.label}${u.apparatus?' — '+esc(u.apparatus):''}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:10px">${u.level}</div>
+        ${u.exercises.length?u.exercises.map(ex=>`<div style="font-size:13px;padding:6px 0;border-top:1px solid var(--bg2)">${esc(ex.name)}${ex.sourceRef?' 📖':''}</div>`).join(''):`<div style="font-size:12px;color:var(--text-faint)">No exercises added.</div>`}
+      </div>
+    `).join('')}
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+      <button class="btn btn-outline" onclick="sbEditSession()">Edit</button>
+      <button class="btn btn-sage" onclick="sbSaveSession()">Save Session</button>
+    </div>
+  `;
+}
+function sbBuildSummaryText(rec){
+  const units = rec.format==='abc'?rec.stages:rec.blocks;
+  const apps = [...new Set(units.map(u=>u.apparatus).filter(Boolean))];
+  return (rec.format==='abc'?'ABC session':'Free-form session') + (apps.length?' — '+apps.join(', '):'');
+}
+function sbSaveSession(){
+  const client = getClient(SB.clientId);
+  const id = newId();
+  const rec = {
+    id, clientId: client.id, date: Date.now(), format: SB.lastFormat,
+    warmup: {enabled:SB.warmupEnabled, exercises:[...SB.warmupExercises]},
+    goalTags: Object.keys(SB.goalTags).filter(k=>SB.goalTags[k]),
+    planWeekLinked: SB.prefill ? SB.prefill.weekNumber : null,
+    length: client.sessionLength,
+  };
+  if(SB.lastFormat==='abc') rec.stages = SB.abcStages.map(s=>({apparatus:s.apparatus, level:s.level, exercises:s.exercises.map(e=>({...e}))}));
+  else rec.blocks = SB.freeformBlocks.map(b=>({apparatus:b.apparatus, level:b.level, exercises:b.exercises.map(e=>({...e}))}));
+  sessions[id] = rec;
+  client.recentSessions.unshift({ id:newId(), date:rec.date, summary:sbBuildSummaryText(rec), tags:rec.goalTags, sessionId:id });
+  persist();
+  showNotif('Session saved');
+  SB = null;
+  openClientProfile(client.id);
+}
+
+// ============================================================
+// CLASS BUILDER (Story 9 — theme-based group/barre classes)
+// ============================================================
+function cbGetTheme(key){ return THEMES.find(t=>t.key===key); }
+function renderClassBuilder(){
+  let body;
+  if(CB.screen==='class') body = cbRenderClassEditor();
+  else if(CB.screen==='library') body = cbRenderLibrary();
+  else body = cbRenderThemes();
+  return `
+    <div class="breadcrumb"><span onclick="cbGoToThemes()">Class Builder</span>${CB.screen==='class'?' › '+esc(CB.classNameInput||'New Class'):''}${CB.screen==='library'?' › Class Library':''}</div>
+    ${body}
+  `;
+}
+function cbRenderThemes(){
+  return `
+    <div class="page-header">
+      <h2>Class Builder</h2>
+      <button class="btn btn-outline" onclick="cbGoToLibrary()">Class Library (${classLibrary.length})</button>
+    </div>
+    <p class="page-sub">Pick a theme to generate a suggested class structure, then customize it for your group.</p>
+    <div class="theme-grid">
+      ${THEMES.map(t=>`
+        <div class="theme-card" onclick="cbSelectTheme('${t.key}')">
+          <div class="theme-icon" style="background:${t.iconBg};color:${t.accent}">●</div>
+          <h3 style="font-size:17px;margin-bottom:4px">${esc(t.name)}</h3>
+          <p style="font-size:12.5px;color:var(--text-muted);line-height:1.5">${esc(t.desc)}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function cbSelectTheme(key){
+  const t = cbGetTheme(key);
+  const exs = t.exercises.map(name=>({id:newId(), name}));
+  CB = { screen:'class', themeKey:key, classExercises:exs, originalExercises:exs.map(e=>({...e})), showAddPanel:false, classNameInput: t.name+' Class' };
+  renderApp();
+}
+function cbGoToThemes(){ CB.screen='themes'; renderApp(); }
+function cbGoToLibrary(){ CB.screen='library'; renderApp(); }
+function cbMoveExercise(idx,dir){
+  const arr = CB.classExercises;
+  const j = idx+dir; if(j<0||j>=arr.length) return;
+  [arr[idx],arr[j]]=[arr[j],arr[idx]];
+  renderApp();
+}
+function cbRemoveExercise(idx){ CB.classExercises.splice(idx,1); renderApp(); }
+function cbToggleAddPanel(){ CB.showAddPanel = !CB.showAddPanel; renderApp(); }
+function cbAddExercise(name){ CB.classExercises.push({id:newId(), name}); CB.showAddPanel=false; renderApp(); }
+function cbRevertToSuggested(){
+  CB.classExercises = CB.originalExercises.map(e=>({...e, id:newId()}));
+  showNotif('Reverted to suggested structure');
+  renderApp();
+}
+function cbIsEdited(){
+  const a = CB.classExercises.map(e=>e.name);
+  const b = CB.originalExercises.map(e=>e.name);
+  return JSON.stringify(a)!==JSON.stringify(b);
+}
+function cbRenderClassEditor(){
+  const theme = CB.themeKey ? cbGetTheme(CB.themeKey) : null;
+  const usedNames = CB.classExercises.map(e=>e.name);
+  const poolOptions = GENERAL_POOL.filter(n=>!usedNames.includes(n));
+  return `
+    <div class="page-header">
+      <div>
+        <h2>${esc(CB.classNameInput||'New Class')}</h2>
+        ${theme?`<div style="font-size:12.5px;color:${theme.accent};font-weight:600;margin-top:4px">${esc(theme.name)}</div>`:''}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="cbRevertToSuggested()">↺ Revert to suggested</button>
+        <button class="btn btn-sage btn-sm" onclick="cbOpenSaveModal()">Save to Library</button>
+      </div>
+    </div>
+    <div style="font-size:12px;color:${cbIsEdited()?'var(--warning)':'var(--sage-dark)'};margin-bottom:14px">${cbIsEdited()?'Edited from suggested structure':'✨ Suggested structure'}</div>
+    <div class="card-flat">
+      ${CB.classExercises.map((ex,i)=>`
+        <div class="exercise-row">
+          <div style="flex:1">${i+1}. ${esc(ex.name)}</div>
+          <div style="display:flex;gap:4px">
+            <button class="icon-btn" ${i===0?'disabled':''} onclick="cbMoveExercise(${i},-1)">↑</button>
+            <button class="icon-btn" ${i===CB.classExercises.length-1?'disabled':''} onclick="cbMoveExercise(${i},1)">↓</button>
+            <button class="icon-btn delete" onclick="cbRemoveExercise(${i})">✕</button>
+          </div>
+        </div>
+      `).join('')}
+      ${CB.showAddPanel?`
+        <div class="inline-picker">
+          <div style="max-height:220px;overflow-y:auto">
+            ${poolOptions.length?poolOptions.map(n=>`<div class="pick-row" onclick="cbAddExercise('${n.replace(/'/g,"\\'")}')">${esc(n)}</div>`).join(''):`<div style="font-size:12px;color:var(--text-faint)">All general-pool exercises are already in this class.</div>`}
+          </div>
+        </div>
+      `:`<button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="cbToggleAddPanel()">+ Add movement</button>`}
+    </div>
+  `;
+}
+function cbOpenSaveModal(){ MODAL = {type:'saveClass', name: CB.classNameInput||''}; renderApp(); }
+function cbConfirmSaveClass(){
+  const name = (MODAL.name||'').trim() || 'Untitled Class';
+  const entry = {
+    id:newId(), name, themeKey:CB.themeKey,
+    exercises: CB.classExercises.map(e=>({id:e.id,name:e.name})),
+    originalExercises: CB.originalExercises.map(e=>({id:e.id,name:e.name})),
+    lastUsed: new Date().toISOString().slice(0,10),
+    createdFrom: null,
+  };
+  classLibrary.unshift(entry);
+  persist();
+  MODAL = null;
+  CB.classNameInput = name;
+  CB.screen = 'library';
+  showNotif('Class saved to library');
+  renderApp();
+}
+function cbRenderLibrary(){
+  return `
+    <div class="page-header"><h2>Class Library</h2></div>
+    ${classLibrary.length?classLibrary.map(entry=>{
+      const theme = entry.themeKey ? cbGetTheme(entry.themeKey) : null;
+      return `
+        <div class="card-flat" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:15px;font-weight:600;font-family:'Cormorant Garamond',serif">${esc(entry.name)}</div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">${theme?esc(theme.name)+' · ':''}Last used ${formatDate(entry.lastUsed)} · ${entry.exercises.length} movements</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="cbOpenLibraryClass('${entry.id}')">Open</button>
+            <button class="btn btn-outline btn-sm" onclick="cbDuplicateLibraryClass('${entry.id}')">Use as Template</button>
+          </div>
+        </div>
+      `;
+    }).join(''):`<div class="empty-state"><div class="icon">🧩</div><h3>No saved classes yet</h3><p>Generate a class from a theme and save it here.</p><button class="btn btn-sage" onclick="cbGoToThemes()">Pick a Theme</button></div>`}
+  `;
+}
+function cbOpenLibraryClass(id){
+  const entry = classLibrary.find(e=>e.id===id);
+  CB = { screen:'class', themeKey:entry.themeKey, classExercises:entry.exercises.map(e=>({...e})), originalExercises:entry.originalExercises.map(e=>({...e})), showAddPanel:false, classNameInput:entry.name };
+  renderApp();
+}
+function cbDuplicateLibraryClass(id){
+  const entry = classLibrary.find(e=>e.id===id);
+  CB = { screen:'class', themeKey:entry.themeKey, classExercises:entry.exercises.map(e=>({...e,id:newId()})), originalExercises:entry.originalExercises.map(e=>({...e})), showAddPanel:false, classNameInput:entry.name+' (copy)' };
+  showNotif('Duplicated as a new working copy');
+  renderApp();
+}
+
+// ============================================================
+// REFERENCE LIBRARY (Story 2)
+// ============================================================
+function refFilteredDocs(){
+  const q = (REF.search||'').toLowerCase();
+  if(!q) return REFERENCE_DOCS;
+  return REFERENCE_DOCS.filter(d=>
+    d.title.toLowerCase().includes(q) || d.source.toLowerCase().includes(q) || d.excerpt.toLowerCase().includes(q) ||
+    (d.fullText && d.fullText.toLowerCase().includes(q)) ||
+    d.sections.some(s=>s.heading.toLowerCase().includes(q) || s.content.toLowerCase().includes(q))
+  );
+}
+function refSetSearch(val){ REF.search = val; renderApp(); }
+function refOpenDoc(id, sectionIndex){ REF.screen='viewer'; REF.activeDocId=id; REF.activeSectionIndex = sectionIndex!=null?sectionIndex:null; renderApp(); }
+function refBackToList(){ REF.screen='list'; REF.activeSectionIndex=null; renderApp(); }
+function refTriggerUpload(){ document.getElementById('ref-upload-input').click(); }
+async function refHandleFileChosen(input){
+  const file = input.files && input.files[0];
+  input.value = '';
+  if(!file) return;
+  REF.uploading = true;
+  renderApp();
+  try{
+    const text = await extractPdfText(file);
+    const fileKey = newId();
+    const doc = {
+      id: newId(), title: file.name.replace(/\.pdf$/i,''), source:'Uploaded manual',
+      date: new Date().toISOString().slice(0,10),
+      excerpt: text.slice(0,220).trim() || 'No extractable text found in this PDF.',
+      sections: [{heading:'Full Text', content: text || '(No extractable text found in this PDF.)'}],
+      fullText: text, fileKey, linkedExerciseIds: [],
+    };
+    await saveDocToIDB(doc);
+    await saveBlobToIDB(fileKey, file);
+    REFERENCE_DOCS.push(doc);
+    showNotif('Manual uploaded and indexed');
+  } catch(e){
+    console.error(e);
+    showNotif('Could not process that PDF');
+  }
+  REF.uploading = false;
+  renderApp();
+}
+function renderReferenceLibrary(){
+  return REF.screen==='viewer' ? renderRefViewer() : renderRefList();
+}
+function renderRefList(){
+  const docs = refFilteredDocs();
+  return `
+    <div class="page-header">
+      <h2>Reference Library</h2>
+      <button class="btn btn-sage" onclick="refTriggerUpload()" ${REF.uploading?'disabled':''}>${REF.uploading?'Processing…':'+ Upload Manual'}</button>
+    </div>
+    <p class="page-sub">Classical training manuals and studio notes — searchable by exercise name or keyword.</p>
+    <div class="library-filters">
+      <input type="text" data-focus-key="ref-search" placeholder="Search manuals…" value="${esc(REF.search)}" oninput="refSetSearch(this.value)">
+    </div>
+    ${docs.length?docs.map(d=>`
+      <div class="doc-card" onclick="refOpenDoc('${d.id}')">
+        <div style="font-size:15px;font-weight:600;font-family:'Cormorant Garamond',serif;margin-bottom:2px">${esc(d.title)}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:6px">${esc(d.source)} · ${formatDate(d.date)}</div>
+        <div style="font-size:12.5px;color:var(--text)">${esc(d.excerpt)}</div>
+      </div>
+    `).join(''):`<div class="empty-state"><div class="icon">📚</div><h3>No matches</h3><p>No documents match "${esc(REF.search)}"</p></div>`}
+  `;
+}
+function renderRefViewer(){
+  const d = REFERENCE_DOCS.find(x=>x.id===REF.activeDocId);
+  if(!d) return renderRefList();
+  return `
+    <div class="breadcrumb"><span onclick="refBackToList()">Reference Library</span> › ${esc(d.title)}</div>
+    <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:4px">${esc(d.source)} · ${formatDate(d.date)}</div>
+    <h2 style="margin-bottom:20px">${esc(d.title)}</h2>
+    ${d.sections.map((s,i)=>`
+      <div class="doc-section ${REF.activeSectionIndex===i?'highlighted':''}">
+        <h3 style="font-size:17px;margin-bottom:6px">${esc(s.heading)}</h3>
+        <p style="font-size:13.5px;line-height:1.7;color:var(--text)">${esc(s.content)}</p>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function renderModal(){
+  const overlay = (inner, cls) => `<div class="modal-overlay" onclick="closeModal()"><div class="modal-box ${cls||''}" onclick="stopProp(event)">${inner}</div></div>`;
+  if(MODAL.type==='clientForm') return overlay(renderClientFormModal());
+  if(MODAL.type==='conditionPicker') return overlay(renderConditionPickerModal(), 'narrow');
+  if(MODAL.type==='handoff') return overlay(renderHandoffModal(), 'narrow');
+  if(MODAL.type==='apparatusPicker') return overlay(renderApparatusPickerModal(), 'narrow');
+  if(MODAL.type==='manageApparatus') return overlay(renderManageApparatusModal(), 'narrow');
+  if(MODAL.type==='saveClass') return overlay(renderSaveClassModal(), 'narrow');
+  return '';
+}
+function renderClientFormModal(){
+  const d = MODAL.data;
+  return `
+    <div class="modal-title">${MODAL.editingId?'Edit client':'New client'}</div>
+    <div class="form-group">
+      <label>Name *</label>
+      <input type="text" value="${esc(d.name)}" placeholder="Client name" oninput="updateModalField('name',this.value)">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" value="${esc(d.age)}" oninput="updateModalField('age',this.value)">
+      </div>
+      <div class="form-group">
+        <label>Experience</label>
+        <select onchange="updateModalField('experience',this.value)">
+          <option value="beginner" ${d.experience==='beginner'?'selected':''}>Beginner</option>
+          <option value="intermediate" ${d.experience==='intermediate'?'selected':''}>Intermediate</option>
+          <option value="advanced" ${d.experience==='advanced'?'selected':''}>Advanced</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Session length</label>
+        <select onchange="updateModalField('sessionLength',this.value,Number)">
+          <option value="40" ${d.sessionLength==40?'selected':''}>40 minutes</option>
+          <option value="50" ${d.sessionLength==50?'selected':''}>50 minutes</option>
+          <option value="60" ${d.sessionLength==60?'selected':''}>60 minutes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Classes / week</label>
+        <select onchange="updateModalField('classesPerWeek',this.value,Number)">
+          ${[1,2,3,4,5].map(n=>`<option value="${n}" ${d.classesPerWeek==n?'selected':''}>${n}x per week</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Goals</label>
+      <input type="text" value="${esc(d.goals)}" placeholder="e.g. core strength, mobility" oninput="updateModalField('goals',this.value)">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-sage" onclick="saveClientFromModal()">Save Client</button>
+    </div>
+  `;
+}
+function renderConditionPickerModal(){
+  const search = (MODAL.search||'').toLowerCase();
+  const client = getClient(MODAL.clientId);
+  const existingNames = client.conditions.map(c=>c.name);
+  const seen = new Set();
+  const results = allConditionNames().filter(n=>{
+    if(seen.has(n)) return false; seen.add(n);
+    return !existingNames.includes(n) && n.toLowerCase().includes(search);
+  });
+  return `
+    <div class="modal-title">Add condition</div>
+    <input type="text" data-focus-key="condition-picker-search" placeholder="Search conditions…" value="${esc(MODAL.search)}" oninput="MODAL.search=this.value; renderApp()" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;margin-bottom:14px">
+    <div style="max-height:240px;overflow-y:auto;margin-bottom:14px">
+      ${results.length?results.map(n=>`<div class="pick-row" onclick="addConditionToClient('${MODAL.clientId}','${n.replace(/'/g,"\\'")}',false)">${esc(n)}</div>`).join(''):`<div style="text-align:center;padding:14px;font-size:12px;color:var(--text-faint)">No matches — add it as a custom condition below.</div>`}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input type="text" placeholder="Add a custom condition…" value="${esc(MODAL.customValue)}" oninput="MODAL.customValue=this.value" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit">
+      <button class="btn btn-outline" onclick="confirmAddCustomCondition()">Add</button>
+    </div>
+    <div style="text-align:right"><span style="font-size:12px;color:var(--text-faint);cursor:pointer" onclick="closeModal()">Close</span></div>
+  `;
+}
+function confirmAddCustomCondition(){
+  const val = (MODAL.customValue||'').trim();
+  if(!val) return;
+  addConditionToClient(MODAL.clientId, val, true);
+}
+function renderHandoffModal(){
+  const c = getClient(MODAL.clientId);
+  const wk = getCurrentPlanWeek(c);
+  const planInfo = c.planStartDate ? clientPlanWeek(c,wk) : null;
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:10.5px;letter-spacing:0.8px;text-transform:uppercase;color:var(--sage-dark);font-weight:700">Substitute Handoff</div>
+      <button class="icon-btn" onclick="closeModal()">✕</button>
+    </div>
+    <h2 style="margin-bottom:18px">${esc(c.name)}</h2>
+    <div style="background:var(--warning-bg);border:1px solid #f0c8b8;border-radius:10px;padding:14px 16px;margin-bottom:18px">
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--warning);margin-bottom:5px">Contraindications</div>
+      <div style="font-size:13px">${esc(conditionsSummary(c))}</div>
+    </div>
+    <div style="margin-bottom:16px"><div class="field-label">Goals</div><div style="font-size:13px">${esc(c.goals)||'—'}</div></div>
+    <div style="margin-bottom:16px">
+      <div class="field-label">Recent sessions</div>
+      ${(c.recentSessions||[]).slice(0,3).map(s=>`<div style="font-size:12.5px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px">${esc(s.summary)} <span style="color:var(--text-faint);font-size:11px">— ${formatDate(s.date)}</span></div>`).join('') || `<div style="font-size:12px;color:var(--text-faint)">No sessions logged yet.</div>`}
+    </div>
+    <div style="margin-bottom:22px"><div class="field-label">Current plan focus</div><div style="font-size:13px">${planInfo?esc(planInfo.apparatus)+' — '+esc(planInfo.focus):'No active plan'}</div></div>
+    <button class="btn btn-sage" style="width:100%" onclick="copyHandoffLink()">Copy shareable link</button>
+  `;
+}
+function renderApparatusPickerModal(){
+  const search = (MODAL.search||'').toLowerCase();
+  const results = APPARATUS_LIST.filter(a=>a.toLowerCase().includes(search));
+  return `
+    <div class="modal-title">Choose apparatus</div>
+    <input type="text" data-focus-key="apparatus-picker-search" placeholder="Search apparatus…" value="${esc(MODAL.search)}" oninput="MODAL.search=this.value; renderApp()" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;margin-bottom:14px">
+    <div style="max-height:280px;overflow-y:auto;margin-bottom:12px">
+      ${results.map(a=>`<div class="pick-row" onclick="sbSelectApparatus('${a.replace(/'/g,"\\'")}')">${esc(a)}</div>`).join('') || `<div style="font-size:12px;color:var(--text-faint)">No matches.</div>`}
+    </div>
+    <div style="text-align:right"><span style="font-size:12px;color:var(--sage-dark);cursor:pointer" onclick="openManageApparatusModal()">+ Manage apparatus</span></div>
+  `;
+}
+function renderManageApparatusModal(){
+  return `
+    <div class="modal-title">Manage apparatus</div>
+    <div style="max-height:220px;overflow-y:auto;margin-bottom:14px">
+      ${APPARATUS_LIST.map(a=>`<div style="padding:9px 12px;font-size:13px;border-bottom:1px solid var(--bg2)">${esc(a)}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input type="text" placeholder="Add new apparatus…" value="${esc(MODAL.newName)}" oninput="MODAL.newName=this.value" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit">
+      <button class="btn btn-sage" onclick="addApparatus()">Add</button>
+    </div>
+    <div class="form-actions" style="margin-top:0"><button class="btn btn-outline" onclick="closeModal()">Done</button></div>
+  `;
+}
+function renderSaveClassModal(){
+  return `
+    <div class="modal-title">Save to Library</div>
+    <div class="form-group">
+      <label>Class name</label>
+      <input type="text" value="${esc(MODAL.name)}" placeholder="e.g. Tuesday 6pm Barre" oninput="MODAL.name=this.value">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-sage" onclick="cbConfirmSaveClass()">Save</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// SLIDE-OVER REFERENCE PANEL (Story 3 / 10 educational info)
+// ============================================================
+function renderPanelRoot(){
+  let title='', blurb='', favored=[], avoided=[];
+  if(PANEL.type==='condition'){
+    const info = findConditionInfo(PANEL.name);
+    if(info){ title=info.name; blurb=info.blurb; favored=info.favored; avoided=info.avoided; }
+    else { title=PANEL.name; blurb='Custom condition — no standard reference on file. Use clinical judgment and client-reported information.'; }
+  } else {
+    const loc = (PANEL.name||PANEL.location||'').toLowerCase();
+    const match = CONDITIONS_LIBRARY.find(c=>c.name.toLowerCase().includes(loc));
+    title = PANEL.location + ' — ' + formatDate(PANEL.date);
+    blurb = 'Observed: "'+PANEL.description+'". ' + (match?match.blurb:'General reference: monitor how this presents during loaded vs. unloaded movement, and note any consistent pattern across sessions.');
+    favored = match?match.favored:['Mobility work in pain-free range'];
+    avoided = match?match.avoided:['Loading into the aggravating range'];
+  }
+  return `
+    <div class="slideover-overlay" onclick="closePanel()">
+      <div class="slideover-panel" onclick="stopProp(event)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span>✨</span>
+            <span style="font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#8a9a86">Reference info</span>
+          </div>
+          <button class="icon-btn" onclick="closePanel()">✕</button>
+        </div>
+        <h2 style="font-size:22px;margin-bottom:14px">${esc(title)}</h2>
+        <p style="font-size:13.5px;color:var(--text);line-height:1.65;margin-bottom:20px">${esc(blurb)}</p>
+        <div style="margin-bottom:16px">
+          <div class="eyebrow">Commonly favored</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${favored.map(a=>`<span class="chip" style="background:#e8f4ea;color:#3d7a47">${esc(a)}</span>`).join('')}</div>
+        </div>
+        <div style="margin-bottom:22px">
+          <div class="eyebrow">Often avoided</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${avoided.map(a=>`<span class="chip" style="background:#fdf0eb;color:#d97054">${esc(a)}</span>`).join('')}</div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+          <p style="font-size:11.5px;color:var(--text-muted);line-height:1.6">This is general educational reference, not a diagnosis. Always recommend a client consult a qualified medical professional for evaluation of any condition or symptom.</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('login-password').addEventListener('keydown', function(e){
+  if(e.key==='Enter') doLogin();
+});
+if(isAuthed()) initApp(); else { document.getElementById('login-screen').style.display='flex'; loadData(); initReferenceLibrary(); }
+</script>
+</body>
+</html>
